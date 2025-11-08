@@ -8,6 +8,167 @@ package GestionIO;
  *
  * @author Andres Salgueiro
  */
+
+import Enums.EstadosProceso;
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class Proceso {
-    //Lo Agrega Christian
+    private static final AtomicInteger ID_GENERATOR = new AtomicInteger(1);
+    
+    private final int id;
+    private final String name;
+    private EstadosProceso state;
+    private final int totalInstructions;
+    private int programCounter;
+    private int mar;
+    private final int cyclesToException;
+    private final int cyclesToCompleteException;
+    private int remainingInstructions;
+    private long waitingTime;
+    private long turnaroundTime;
+    private long responseTime;
+    private final long creationTime;
+    private final int priority;
+    private final int memorySize;
+    private long lastReadyQueueTime;
+    
+    public Proceso(String name, int totalInstructions, 
+               int cyclesToException, int cyclesToCompleteException,
+               int priority, int memorySize) {
+        this.id = ID_GENERATOR.getAndIncrement();
+        this.name = name;
+        this.totalInstructions = totalInstructions;
+        this.remainingInstructions = totalInstructions;
+        this.cyclesToException = cyclesToException;
+        this.cyclesToCompleteException = cyclesToCompleteException;
+        this.priority = priority;
+        this.memorySize = memorySize;
+        this.state = EstadosProceso.NUEVO;
+        this.programCounter = 0;
+        this.mar = 0;
+        this.creationTime = System.currentTimeMillis();
+        this.lastReadyQueueTime = 0;
+    }
+    
+    // Getters y Setters
+    public int getId() { return id; }
+    public String getName() { return name; }
+    public EstadosProceso getState() { return state; }
+    public void setState(EstadosProceso state) { this.state = state; }
+    public int getTotalInstructions() { return totalInstructions; }
+    public int getProgramCounter() { return programCounter; }
+    public void setProgramCounter(int programCounter) { this.programCounter = programCounter; }
+    public int getMAR() { return mar; }
+    public void setMAR(int mar) { this.mar = mar; }
+    public int getCyclesToException() { return cyclesToException; }
+    public int getCyclesToCompleteException() { return cyclesToCompleteException; }
+    public int getRemainingInstructions() { return remainingInstructions; }
+    public void setRemainingInstructions(int remainingInstructions) { 
+        this.remainingInstructions = remainingInstructions; 
+    }
+    public long getWaitingTime() { return waitingTime; }
+    public void setWaitingTime(long waitingTime) { this.waitingTime = waitingTime; }
+    public long getTurnaroundTime() { return turnaroundTime; }
+    public void setTurnaroundTime(long turnaroundTime) { this.turnaroundTime = turnaroundTime; }
+    public long getResponseTime() { return responseTime; }
+    public void setResponseTime(long responseTime) { this.responseTime = responseTime; }
+    public long getCreationTime() { return creationTime; }
+    public int getPriority() { return priority; }
+    public int getMemorySize() { return memorySize; }
+    public long getLastReadyQueueTime() { return lastReadyQueueTime; }
+    public void setLastReadyQueueTime(long time) { this.lastReadyQueueTime = time; }
+    public int getServiceTime() { return totalInstructions;}
+    
+    /**
+     * Lógica de ejecución 
+     * @return 
+     */
+    public boolean executeInstruction() {
+        if (remainingInstructions <= 0) {
+            state = EstadosProceso.TERMINADO;
+            return true;
+        }
+        
+        programCounter++;
+        mar = programCounter;
+        remainingInstructions--;
+        
+        if (this.type == ProcessType.IO_BOUND &&
+            cyclesToException > 0 && 
+            programCounter > 0 && 
+            programCounter % cyclesToException == 0 &&
+            state == EstadosProceso.EJECUTANDO) {
+            
+            System.out.println("Generando excepción para: " + name + " (" + type + ") en PC: " + programCounter);
+            generateException();
+            return false; // El proceso se bloquea
+        }
+        
+        if (remainingInstructions == 0) {
+            state = EstadosProceso.TERMINADO;
+            return true;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Generar excepción 
+     */
+    private void generateException() {
+        state = EstadosProceso.BLOQUEADO;
+        
+        if (scheduler != null) {
+            this.setState(EstadosProceso.BLOQUEADO);
+        }
+        
+        javax.swing.SwingWorker<Void, Void> worker = new javax.swing.SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                try {
+                    System.out.println("Iniciando operación de excepción para: " + name);
+                    
+                    for (int i = 0; i < cyclesToCompleteException; i++) {
+                        Thread.sleep(scheduler.getCycleDuration());
+
+                        setMAR(getMAR() + 1); 
+
+                        System.out.println("Progreso excepción " + name + ": " + (i+1) + "/" + cyclesToCompleteException);
+                    }
+                    
+                    System.out.println("Operación de excepción completada para: " + name);
+                    
+                } catch (InterruptedException e) {
+                    System.out.println("Operación de excepción interrumpida para: " + name);
+                    Thread.currentThread().interrupt();
+                } catch (Exception e) {
+                    System.err.println("Error en operación de excepción para " + name + ": " + e.getMessage());
+                }
+                return null;
+            }
+            
+            @Override
+            protected void done() {
+                if (scheduler != null) {
+                    scheduler.unblockProcess(Proceso.this);
+                }
+            }
+        };
+        
+        worker.execute();
+    }
+    
+    public void incrementWaitingTime() {
+        this.waitingTime++;
+    }
+    
+    public int compareTo(Proceso other) {
+        return Long.compare(this.creationTime, other.creationTime);
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("PCB{id=%d, name='%s', state=%s, PC=%d, MAR=%d, remaining=%d}", 
+                           id, name, state, programCounter, mar, remainingInstructions);
+    }
 }
