@@ -9,5 +9,5 @@ package GestionIO;
  * @author Andres Salgueiro
  */
 public class ManejadorProcesos {
- //Manejador de Procesos   
+ //Manejador de Procesos   = SCHEDULER
 }

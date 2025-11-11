@@ -13,5 +13,5 @@ public enum EstadosProceso {
     LISTO,
     EJECUTANDO,
     BLOQUEADO,
-    TERMINANO,
+    TERMINADO,
 }
