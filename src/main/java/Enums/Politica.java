@@ -12,6 +12,5 @@ public enum Politica {
     FIFO,
     SSTF,
     SCAN,
-    CSCAN,
-    
+    CSCAN, 
 }
