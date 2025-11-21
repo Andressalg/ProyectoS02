@@ -10,5 +10,4 @@ package Sistema;
  */
 public class Disco {
     // Simulacion de Almacen
-    
 }
