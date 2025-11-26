@@ -50,7 +50,7 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTree1 = new javax.swing.JTree();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jProcesosTable = new javax.swing.JTable();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTableArchivos = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
@@ -101,7 +101,7 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
         jTree1.setToolTipText("");
         jScrollPane1.setViewportView(jTree1);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jProcesosTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -112,7 +112,7 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane2.setViewportView(jTable1);
+        jScrollPane2.setViewportView(jProcesosTable);
 
         jTableArchivos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -305,6 +305,7 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
 
     private void DirectorioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DirectorioButtonActionPerformed
         Sistema.JTree.anadirDirectorio(jTree1, (javax.swing.tree.DefaultTreeModel) jTree1.getModel());
+        crearProcesoDirectorio();
     }//GEN-LAST:event_DirectorioButtonActionPerformed
 
     private void ModoUsuarioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ModoUsuarioButtonActionPerformed
@@ -325,6 +326,7 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
                 archivosMap.put(nodo, nuevoArchivo);
             }
             actualizarTablaArchivos();
+            crearProcesoArchivo(nuevoArchivo.getNombre());
         }
     }//GEN-LAST:event_ArchivoButtonActionPerformed
 
@@ -335,6 +337,7 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
             return;
         }
         javax.swing.tree.DefaultMutableTreeNode nodo = (javax.swing.tree.DefaultMutableTreeNode) seleccion.getLastPathComponent();
+        String nombreActual = nodo.getUserObject().toString();
         if (archivosMap.containsKey(nodo)) {
             Sistema.Archivo archivo = archivosMap.get(nodo);
             String actual = archivo.getNombre();
@@ -354,8 +357,10 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
             nodo.setUserObject(archivo);
             ((javax.swing.tree.DefaultTreeModel) jTree1.getModel()).nodeChanged(nodo);
             actualizarTablaArchivos();
+            crearProcesoRenombrar(nombreActual, nuevo);
         } else {
             Sistema.JTree.renombrarNodo(jTree1, (javax.swing.tree.DefaultTreeModel) jTree1.getModel());
+            crearProcesoRenombrar(nombreActual, nodo.getUserObject().toString());
         }
     }//GEN-LAST:event_RenombrarButtonActionPerformed
 
@@ -366,6 +371,7 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
             return;
         }
         javax.swing.tree.DefaultMutableTreeNode nodo = (javax.swing.tree.DefaultMutableTreeNode) seleccion.getLastPathComponent();
+        String nombreEliminar = nodo.getUserObject().toString();
         if (nodo.getParent() == null) {
             javax.swing.JOptionPane.showMessageDialog(this, "No se puede eliminar el nodo root.");
             return;
@@ -382,6 +388,7 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
         Sistema.JTree.removerNodo(jTree1, (javax.swing.tree.DefaultTreeModel) jTree1.getModel());
 
         actualizarTablaArchivos();
+        crearProcesoEliminar(nombreEliminar);
     }//GEN-LAST:event_EliminarButtonActionPerformed
 
      private void eliminarMapRecursivo(javax.swing.tree.DefaultMutableTreeNode nodo) {
@@ -411,6 +418,7 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
         
         archivosMap.clear();
         inicializarTablaBloques();
+        
         javax.swing.JOptionPane.showMessageDialog(null, "Simulación iniciada. Sistema reiniciado.");
     }//GEN-LAST:event_EmpezarSimulacionButtonActionPerformed
 
@@ -536,6 +544,63 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
         }
     }
     
+    private void crearProcesoDirectorio() {
+        GestionIO.Proceso proceso = new GestionIO.Proceso(
+            obtenerSiguienteIdProceso(),
+            "Crear_Directorio",
+            new Usuario.Usuario("usuario_actual", "pass", false)
+        );
+        proceso.establecerListo();
+        agregarProcesosTable(proceso);
+    }
+
+    private void crearProcesoArchivo(String nombreArchivo) {
+        GestionIO.Proceso proceso = new GestionIO.Proceso(
+            obtenerSiguienteIdProceso(),
+            "Crear_Archivo_" + nombreArchivo,
+            new Usuario.Usuario("usuario_actual", "pass", false)
+        );
+        proceso.establecerListo();
+        agregarProcesosTable(proceso);
+    }
+
+     private void crearProcesoRenombrar(String nombreAnterior, String nombreNuevo) {
+        GestionIO.Proceso proceso = new GestionIO.Proceso(
+            obtenerSiguienteIdProceso(),
+            "Renombrar_" + nombreAnterior + "_a_" + nombreNuevo,
+            new Usuario.Usuario("usuario_actual", "pass", false)
+        );
+        proceso.establecerListo();
+        agregarProcesosTable(proceso);
+    }
+
+    private void crearProcesoEliminar(String nombre) {
+        GestionIO.Proceso proceso = new GestionIO.Proceso(
+            obtenerSiguienteIdProceso(),
+            "Eliminar_" + nombre,
+            new Usuario.Usuario("usuario_actual", "pass", false)
+        );
+        proceso.establecerListo();
+        agregarProcesosTable(proceso);
+    }
+    
+    private void agregarProcesosTable(GestionIO.Proceso proceso) {
+        javax.swing.table.DefaultTableModel tableModel = (javax.swing.table.DefaultTableModel) jProcesosTable.getModel();
+        tableModel.addRow(new Object[]{
+            proceso.getIdProceso(),
+            proceso.getNombreProceso(),
+            proceso.getUsuario().getUsername(),
+            proceso.getEstado().toString(),
+            "0"
+        });
+    }
+
+    private int siguienteIdProceso = 1;
+
+    private int obtenerSiguienteIdProceso() {
+        return siguienteIdProceso++;
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -579,11 +644,11 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JTable jProcesosTable;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTable jTableArchivos;
     private javax.swing.JTable jTableBloques;
     private javax.swing.JTree jTree1;

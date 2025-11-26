@@ -19,6 +19,10 @@ public class Usuario {
         this.Nombre = Nombre;
         this.Clave = Clave;
     }
+
+    public Usuario(String usuario_actual, String pass, boolean b) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
     // Getters
     public String getUsername() {
