@@ -6,27 +6,23 @@ package EDD;
 
 /**
  *
- * @author buste
+ * @author Andres Salgueiro
  */
-public class Nodo {private Object data;      // El objeto a guardar
-    private Nodo pnext;      // La dirección del siguiente nodo
-    private Nodo pprevious;  // La dirección del nodo anterior (para listas dobles)
+public class Nodo {private Object data;
+    private Nodo pnext;
+    private Nodo pprevious;
 
-    // Constructor principal
     public Nodo(Object data) {
         this.data = data;
         this.pnext = null;
         this.pprevious = null;
     }
     
-    // Constructor vacío (para flexibilidad)
     public Nodo() {
         this.data = null;
         this.pnext = null;
         this.pprevious = null;
     }
-
-    // ===== GETTERS Y SETTERS =====
     
     public Object getData() {
         return data;
@@ -52,7 +48,6 @@ public class Nodo {private Object data;      // El objeto a guardar
         this.pprevious = pprevious;
     }
     
-    // Método toString para debugging
     @Override
     public String toString() {
         return "Nodo{" + "data=" + data + '}';

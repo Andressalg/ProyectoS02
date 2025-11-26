@@ -15,7 +15,7 @@ public class Bloque {
     private String procesoPropietario;
     private Object datos;
     
-    public Bloque(int numeroBloque) {
+    public Bloque(int numeroBloque, int par) {
         this.numeroBloque = numeroBloque;
         this.ocupado = false;
         this.archivoPropietario = null;

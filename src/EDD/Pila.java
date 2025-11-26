@@ -8,7 +8,7 @@ import EDD.Nodo;
 
 /**
  *
- * @author Ada y Day
+ * @author Andres Salgueiro
  */
 public class Pila {
     
@@ -46,13 +46,13 @@ public class Pila {
         return datoDesapilado;
     }
 
-    // PEEK
+    // PEAK
     public Object verCima() {
         if (isEmpty()) {
             System.out.println("Error: La pila está vacía, no hay elemento en la cima.");
             return null;
         }
-        return peak.getData(); // Obtiene el dato de la cima sin eliminarlo
+        return peak.getData();
     }
 
     public int getTamano() { 

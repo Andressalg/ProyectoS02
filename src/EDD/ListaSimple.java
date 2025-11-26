@@ -8,7 +8,7 @@ import EDD.Nodo;
 
 /**
  *
- * @author buste
+ * @author Andres Salgueiro
  */
 public class ListaSimple {
     
@@ -111,13 +111,13 @@ public class ListaSimple {
         }
         
         for (int i = 0; i < index; i++) {
-            if (tmp == null) {  // ← NUEVO: Check defensivo para evitar NPE si size inflado
+            if (tmp == null) {
                 throw new IndexOutOfBoundsException("Lista inconsistente: size=" + size + " pero solo " + i + " nodos");
             }
             tmp = tmp.getPnext();
         }
         
-        if (tmp == null) {  // Check final
+        if (tmp == null) {
             throw new IndexOutOfBoundsException("Nodo null al final del bucle (lista inconsistente)");
         }
         

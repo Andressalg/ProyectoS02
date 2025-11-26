@@ -4,6 +4,9 @@
  */
 package Interfaz;
 
+import Sistema.Archivo;
+import java.util.HashMap;
+
 /**
  *
  * @author Andres Salgueiro
@@ -21,6 +24,13 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
         ArchivoButton.setVisible(false);
         RenombrarButton.setVisible(false);
         EliminarButton.setVisible(false);
+        
+        javax.swing.tree.DefaultMutableTreeNode root = new javax.swing.tree.DefaultMutableTreeNode("Sistema");
+        javax.swing.tree.DefaultTreeModel modelo = new javax.swing.tree.DefaultTreeModel(root);
+        jTree1.setModel(modelo);
+        jTree1.setSize(300, 200);
+        javax.swing.table.DefaultTableModel tableModelo = (javax.swing.table.DefaultTableModel) jTableArchivos.getModel();
+        tableModelo.setRowCount(0);
     }
 
     /**
@@ -42,7 +52,7 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        jTableArchivos = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -52,6 +62,7 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
         ModoAdministradorButton = new javax.swing.JRadioButton();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
+        EmpezarSimulacionButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -83,6 +94,7 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
             }
         });
 
+        jTree1.setToolTipText("");
         jScrollPane1.setViewportView(jTree1);
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -98,18 +110,18 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(jTable1);
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        jTableArchivos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Nombre", "Bloques", "Primer Bloque"
             }
         ));
-        jScrollPane3.setViewportView(jTable2);
+        jScrollPane3.setViewportView(jTableArchivos);
 
         jLabel1.setText("Estructura de Directorios");
 
@@ -142,10 +154,24 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
 
         jLabel7.setText("Bloques Libres:");
 
+        EmpezarSimulacionButton.setText("Empezar Simulación");
+        EmpezarSimulacionButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EmpezarSimulacionButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 289, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addGap(213, 213, 213)
+                .addComponent(jLabel3)
+                .addGap(96, 96, 96))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -154,35 +180,29 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
                     .addComponent(ArchivoButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(RenombrarButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(EliminarButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 207, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(16, 16, 16))
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel2)
-                .addGap(213, 213, 213)
-                .addComponent(jLabel3)
-                .addGap(96, 96, 96))
-            .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(ModoUsuarioButton)
-                                .addGap(99, 99, 99)
-                                .addComponent(jLabel6)))
-                        .addGap(160, 160, 160)
-                        .addComponent(jLabel7))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(40, 40, 40)
-                        .addComponent(ModoAdministradorButton)))
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ModoUsuarioButton)
+                        .addGap(99, 99, 99)
+                        .addComponent(jLabel6)))
+                .addGap(160, 160, 160)
+                .addComponent(jLabel7)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addComponent(ModoAdministradorButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(EmpezarSimulacionButton, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(49, 49, 49))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -196,26 +216,35 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(EliminarButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(ModoUsuarioButton)
-                    .addComponent(jLabel6)
-                    .addComponent(jLabel7))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ModoAdministradorButton)
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(133, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(ModoUsuarioButton)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel7))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(ModoAdministradorButton))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(EmpezarSimulacionButton)
+                                .addGap(17, 17, 17))))))
         );
 
         pack();
@@ -233,17 +262,83 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
     }//GEN-LAST:event_ModoUsuarioButtonActionPerformed
 
     private void ArchivoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ArchivoButtonActionPerformed
-        Sistema.JTree.anadirArchivo(jTree1, (javax.swing.tree.DefaultTreeModel) jTree1.getModel());
+        Archivo nuevoArchivo = Sistema.JTree.anadirArchivo(jTree1, 
+            (javax.swing.tree.DefaultTreeModel) jTree1.getModel(), 
+            "usuario_actual");
+
+        if (nuevoArchivo != null) {
+            javax.swing.tree.DefaultMutableTreeNode nodo = (javax.swing.tree.DefaultMutableTreeNode) jTree1.getLastSelectedPathComponent();
+            if (nodo != null) {
+                archivosMap.put(nodo, nuevoArchivo);
+            }
+            actualizarTablaArchivos();
+        }
     }//GEN-LAST:event_ArchivoButtonActionPerformed
 
     private void RenombrarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RenombrarButtonActionPerformed
-        Sistema.JTree.renombrarNodo(jTree1, (javax.swing.tree.DefaultTreeModel) jTree1.getModel());
+        javax.swing.tree.TreePath seleccion = jTree1.getSelectionPath();
+        if (seleccion == null) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Seleccione un archivo/directorio para renombrar.");
+            return;
+        }
+        javax.swing.tree.DefaultMutableTreeNode nodo = (javax.swing.tree.DefaultMutableTreeNode) seleccion.getLastPathComponent();
+        if (archivosMap.containsKey(nodo)) {
+            Sistema.Archivo archivo = archivosMap.get(nodo);
+            String actual = archivo.getNombre();
+            String nuevo = javax.swing.JOptionPane.showInputDialog(this, "Nuevo nombre:", actual);
+            if (nuevo == null) return;
+            nuevo = nuevo.trim();
+            if (nuevo.isEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Nombre vacío. Operación cancelada.");
+                return;
+            }
+
+            boolean ok = archivo.renombrar(nuevo, archivo.getPropietario(), false);
+            if (!ok) {
+                javax.swing.JOptionPane.showMessageDialog(this, "No tiene permisos para renombrar el archivo.");
+                return;
+            }
+            nodo.setUserObject(archivo);
+            ((javax.swing.tree.DefaultTreeModel) jTree1.getModel()).nodeChanged(nodo);
+            actualizarTablaArchivos();
+        } else {
+            Sistema.JTree.renombrarNodo(jTree1, (javax.swing.tree.DefaultTreeModel) jTree1.getModel());
+        }
     }//GEN-LAST:event_RenombrarButtonActionPerformed
 
     private void EliminarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarButtonActionPerformed
+        javax.swing.tree.TreePath seleccion = jTree1.getSelectionPath();
+        if (seleccion == null) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Seleccione un archivo/directorio para eliminar.");
+            return;
+        }
+        javax.swing.tree.DefaultMutableTreeNode nodo = (javax.swing.tree.DefaultMutableTreeNode) seleccion.getLastPathComponent();
+        if (nodo.getParent() == null) {
+            javax.swing.JOptionPane.showMessageDialog(this, "No se puede eliminar el nodo root.");
+            return;
+        }
+
+        int confirm = javax.swing.JOptionPane.showConfirmDialog(this,
+                "¿Eliminar '" + nodo.getUserObject() + "' y sus hijo(s)?",
+                "Confirmar eliminación",
+                javax.swing.JOptionPane.YES_NO_OPTION);
+        if (confirm != javax.swing.JOptionPane.YES_OPTION) return;
+
+        eliminarMapRecursivo(nodo);
+        
         Sistema.JTree.removerNodo(jTree1, (javax.swing.tree.DefaultTreeModel) jTree1.getModel());
+
+        actualizarTablaArchivos();
     }//GEN-LAST:event_EliminarButtonActionPerformed
 
+     private void eliminarMapRecursivo(javax.swing.tree.DefaultMutableTreeNode nodo) {
+        for (int i = 0; i < nodo.getChildCount(); i++) {
+            javax.swing.tree.DefaultMutableTreeNode hijo = (javax.swing.tree.DefaultMutableTreeNode) nodo.getChildAt(i);
+            eliminarMapRecursivo(hijo);
+        }
+        archivosMap.remove(nodo);
+    }   
+    
     private void ModoAdministradorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ModoAdministradorButtonActionPerformed
         DirectorioButton.setVisible(true);
         ArchivoButton.setVisible(true);
@@ -251,6 +346,50 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
         EliminarButton.setVisible(true);
     }//GEN-LAST:event_ModoAdministradorButtonActionPerformed
 
+    private void EmpezarSimulacionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EmpezarSimulacionButtonActionPerformed
+        actualizarTablaArchivos();
+        
+        javax.swing.tree.DefaultMutableTreeNode root = new javax.swing.tree.DefaultMutableTreeNode("Sistema");
+        javax.swing.tree.DefaultTreeModel modelo = new javax.swing.tree.DefaultTreeModel(root);
+        jTree1.setModel(modelo);
+        jTree1.setSize(300, 200);
+        javax.swing.table.DefaultTableModel tableModelo = (javax.swing.table.DefaultTableModel) jTableArchivos.getModel();
+        tableModelo.setRowCount(0);
+        
+        archivosMap.clear();
+        javax.swing.JOptionPane.showMessageDialog(null, "Simulación iniciada. Sistema reiniciado.");
+    }//GEN-LAST:event_EmpezarSimulacionButtonActionPerformed
+
+    private void actualizarTablaArchivos() {
+        javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) jTableArchivos.getModel();
+        modelo.setRowCount(0);
+        modelo.setColumnIdentifiers(new String[]{"Nombre", "Bloques", "Primer Bloque"});
+        
+        javax.swing.tree.DefaultMutableTreeNode root = (javax.swing.tree.DefaultMutableTreeNode) jTree1.getModel().getRoot();
+        recorrerArbol(root, modelo);
+    }
+
+    private HashMap<javax.swing.tree.DefaultMutableTreeNode, Sistema.Archivo> archivosMap = new HashMap<>();
+
+    private void recorrerArbol(javax.swing.tree.DefaultMutableTreeNode nodo, javax.swing.table.DefaultTableModel modelo) {
+        for (int i = 0; i < nodo.getChildCount(); i++) {
+            javax.swing.tree.DefaultMutableTreeNode hijo = (javax.swing.tree.DefaultMutableTreeNode) nodo.getChildAt(i);
+
+            if (archivosMap.containsKey(hijo)) {
+                Sistema.Archivo archivo = archivosMap.get(hijo);
+                modelo.addRow(new Object[]{
+                    archivo.getNombre(),
+                    archivo.getCantidadBloques(),
+                    archivo.obtenerPrimerBloque()
+                });
+            }
+
+            if (hijo.getChildCount() > 0) {
+                recorrerArbol(hijo, modelo);
+            }
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -280,6 +419,7 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
     private javax.swing.JButton ArchivoButton;
     private javax.swing.JButton DirectorioButton;
     private javax.swing.JButton EliminarButton;
+    private javax.swing.JButton EmpezarSimulacionButton;
     private javax.swing.JRadioButton ModoAdministradorButton;
     private javax.swing.JRadioButton ModoUsuarioButton;
     private javax.swing.JButton RenombrarButton;
@@ -295,7 +435,7 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
+    private javax.swing.JTable jTableArchivos;
     private javax.swing.JTree jTree1;
     // End of variables declaration//GEN-END:variables
 }
