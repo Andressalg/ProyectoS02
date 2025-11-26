@@ -9,68 +9,68 @@ package Sistema;
  * @author Andres Salgueiro
  */
 public class Bloque {
-    private int blockNumber;
-    private boolean isOccupied;
-    private String ownerFile;
-    private String ownerProcess;
-    private Object data;
+    private int numeroBloque;
+    private boolean ocupado;
+    private String archivoPropietario;
+    private String procesoPropietario;
+    private Object datos;
     
-    public Bloque(int blockNumber) {
-        this.blockNumber = blockNumber;
-        this.isOccupied = false;
-        this.ownerFile = null;
-        this.ownerProcess = null;
-        this.data = null;
+    public Bloque(int numeroBloque) {
+        this.numeroBloque = numeroBloque;
+        this.ocupado = false;
+        this.archivoPropietario = null;
+        this.procesoPropietario = null;
+        this.datos = null;
     }
     
     // Getters
-    public int getBlockNumber() {
-        return blockNumber;
+    public int getNumeroBloque() {
+        return numeroBloque;
     }
     
-    public boolean isOccupied() {
-        return isOccupied;
+    public boolean isOcupado() {
+        return ocupado;
     }
     
-    public String getOwnerFile() {
-        return ownerFile;
+    public String getArchivoPropietario() {
+        return archivoPropietario;
     }
     
-    public String getOwnerProcess() {
-        return ownerProcess;
+    public String getProcesoPropietario() {
+        return procesoPropietario;
     }
     
-    public Object getData() {
-        return data;
+    public Object getDatos() {
+        return datos;
     }
     
     // Setters
-    public void setOccupied(boolean occupied) {
-        this.isOccupied = occupied;
+    public void setOcupado(boolean ocupado) {
+        this.ocupado = ocupado;
     }
     
-    public void setOwnerFile(String ownerFile) {
-        this.ownerFile = ownerFile;
+    public void setArchivoPropietario(String archivoPropietario) {
+        this.archivoPropietario = archivoPropietario;
     }
     
-    public void setOwnerProcess(String ownerProcess) {
-        this.ownerProcess = ownerProcess;
+    public void setProcesoPropietario(String procesoPropietario) {
+        this.procesoPropietario = procesoPropietario;
     }
     
-    public void setData(Object data) {
-        this.data = data;
+    public void setDatos(Object datos) {
+        this.datos = datos;
     }
     
-    public void clearBlock() {
-        this.isOccupied = false;
-        this.ownerFile = null;
-        this.ownerProcess = null;
-        this.data = null;
+    public void limpiarBloque() {
+        this.ocupado = false;
+        this.archivoPropietario = null;
+        this.procesoPropietario = null;
+        this.datos = null;
     }
     
     @Override
     public String toString() {
-        return "Block{" + "number=" + blockNumber + ", occupied=" + isOccupied + 
-               ", file=" + ownerFile + ", process=" + ownerProcess + '}';
+        return "Bloque{" + "numero=" + numeroBloque + ", ocupado=" + ocupado + 
+               ", archivo=" + archivoPropietario + ", proceso=" + procesoPropietario + '}';
     }
 }

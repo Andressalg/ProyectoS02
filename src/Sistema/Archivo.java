@@ -1,246 +1,180 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Sistema;
+
 import EDD.ListaSimple;
 import Usuario.Permisos;
 
-/**
- *
- * @author Andres Salgueiro
- */
 public class Archivo {
     private String nombre;
     private String propietario;
     private int tamaño;
-    private int blockCount;
-    private ListaSimple BloquesAsignados;
+    private int cantidadBloques;
+    private ListaSimple bloquesAsignados;
     private Permisos permisos;
-    private String fechadecreacion;
-    private String lastModified;
-    private String content;
+    private String fechaCreacion;
+    private String fechaModificacion;
+    private String contenido;
     
-    public Achivo(String nombre, String propietario, int tamaño) {
+    public Archivo(String nombre, String propietario, int tamaño) {
         this.nombre = nombre;
         this.propietario = propietario;
         this.tamaño = tamaño;
-        this.blockCount = 0;
-        this.BloquesAsignados = new ListaSimple();
+        this.cantidadBloques = 0;
+        this.bloquesAsignados = new ListaSimple();
         this.permisos = new Permisos(propietario);
-        this.fechadecreacion = java.time.LocalDateTime.now().toString();
-        this.lastModified = this.fechadecreacion;
-        this.content = "";
+        this.fechaCreacion = obtenerFechaActual();
+        this.fechaModificacion = this.fechaCreacion;
+        this.contenido = "";
     }
     
-    // ===== OPERACIONES CRUD =====
-    
-    /**
-     * CREATE
-     */
-    public boolean CREATE(String newContent, String username, boolean isAdmin) {
-        if (!permisos.canWrite(username, isAdmin)) {
-            System.out.println("Error: No tiene permisos de escritura sobre " + nombre);
+    public boolean escribirContenido(String nuevoContenido, String usuario, boolean esAdmin) {
+        if (!permisos.puedeEscribir(usuario, esAdmin)) {
+            System.out.println("Error: Sin permisos de escritura sobre " + nombre);
             return false;
         }
         
-        this.content = newContent;
-        this.tamaño = newContent.length();
-        this.lastModified = java.time.LocalDateTime.now().toString();
-        System.out.println("Archivo '" + nombre + "' creado/modificado con " + newContent.length() + " caracteres");
+        this.contenido = nuevoContenido;
+        this.tamaño = nuevoContenido.length();
+        this.fechaModificacion = obtenerFechaActual();
+        System.out.println("Archivo '" + nombre + "' escrito. Tamaño: " + tamaño + " caracteres");
         return true;
     }
     
-    /**
-     * READ
-     */
-    public String READ(String username, boolean isAdmin) {
-        if (!permisos.canRead(username, isAdmin)) {
-            System.out.println("Error: No tiene permisos de lectura sobre " + nombre);
+    public String leerContenido(String usuario, boolean esAdmin) {
+        if (!permisos.puedeLeer(usuario, esAdmin)) {
+            System.out.println("Error: Sin permisos de lectura sobre " + nombre);
             return null;
         }
         
-        System.out.println("Leyendo archivo '" + nombre + "': " + content.length() + " caracteres");
-        return content;
+        System.out.println("Leyendo archivo '" + nombre + "': " + contenido.length() + " caracteres");
+        return contenido;
     }
     
-    /**
-     * UPDATE
-     */
-    public boolean UPDATE(String newContent, String username, boolean isAdmin) {
-        if (!permisos.canWrite(username, isAdmin)) {
-            System.out.println("Error: No tiene permisos de escritura sobre " + nombre);
+    public boolean agregarContenido(String contenidoAdicional, String usuario, boolean esAdmin) {
+        if (!permisos.puedeEscribir(usuario, esAdmin)) {
+            System.out.println("Error: Sin permisos de escritura sobre " + nombre);
             return false;
         }
         
-        this.content = newContent;
-        this.tamaño = newContent.length();
-        this.lastModified = java.time.LocalDateTime.now().toString();
-        System.out.println("Archivo '" + nombre + "' actualizado. Nuevo tamaño: " + newContent.length() + " caracteres");
+        this.contenido += contenidoAdicional;
+        this.tamaño = this.contenido.length();
+        this.fechaModificacion = obtenerFechaActual();
+        System.out.println("Contenido agregado a '" + nombre + "'. Nuevo tamaño: " + tamaño + " caracteres");
         return true;
     }
     
-    /**
-     * UPDATE 
-     */
-    public boolean UPDATEnombre(String newName, String username, boolean isAdmin) {
-        if (!permisos.canWrite(username, isAdmin)) {
-            System.out.println("Error: No tiene permisos para renombrar " + nombre);
+    public boolean vaciarContenido(String usuario, boolean esAdmin) {
+        if (!permisos.puedeEscribir(usuario, esAdmin)) {
+            System.out.println("Error: Sin permisos para vaciar " + nombre);
             return false;
         }
         
-        String oldName = this.nombre;
-        this.nombre = newName;
-        this.lastModified = java.time.LocalDateTime.now().toString();
-        System.out.println("Archivo '" + oldName + "' renombrado a '" + newName + "'");
-        return true;
-    }
-    
-    /**
-     * UPDATE
-     */
-    public boolean UPDATEappend(String additionalContent, String username, boolean isAdmin) {
-        if (!permisos.canWrite(username, isAdmin)) {
-            System.out.println("Error: No tiene permisos de escritura sobre " + nombre);
-            return false;
-        }
-        
-        this.content += additionalContent;
-        this.tamaño = this.content.length();
-        this.lastModified = java.time.LocalDateTime.now().toString();
-        System.out.println("Contenido agregado a '" + nombre + "'. Nuevo tamaño: " + this.tamaño + " caracteres");
-        return true;
-    }
-    
-    /**
-     * DELETE
-     */
-    public boolean DELETE(String username, boolean isAdmin) {
-        if (!permisos.canWrite(username, isAdmin)) {
-            System.out.println("Error: No tiene permisos para eliminar contenido de " + nombre);
-            return false;
-        }
-        
-        this.content = "";
+        this.contenido = "";
         this.tamaño = 0;
-        this.lastModified = java.time.LocalDateTime.now().toString();
-        System.out.println("Contenido del archivo '" + nombre + "' eliminado");
+        this.fechaModificacion = obtenerFechaActual();
+        System.out.println("Archivo '" + nombre + "' vaciado");
         return true;
     }
     
-    /**
-     * DELETE
-     */
-    public boolean PrepararDELETE(String username, boolean isAdmin) {
-        if (!permisos.canWrite(username, isAdmin)) {
-            System.out.println("Error: No tiene permisos para eliminar " + nombre);
+    public boolean renombrar(String nuevoNombre, String usuario, boolean esAdmin) {
+        if (!permisos.puedeEscribir(usuario, esAdmin)) {
+            System.out.println("Error: Sin permisos para renombrar " + nombre);
             return false;
         }
         
-        // Liberar bloques asignados
-        clearBlocks();
-        this.content = "";
-        this.tamaño = 0;
-        System.out.println("Archivo '" + nombre + "' preparado para eliminación");
+        String nombreAnterior = this.nombre;
+        this.nombre = nuevoNombre;
+        this.fechaModificacion = obtenerFechaActual();
+        System.out.println("Archivo '" + nombreAnterior + "' renombrado a '" + nuevoNombre + "'");
         return true;
     }
     
-    // ===== OPERACIONES DE BLOQUES =====
-    
-    public void addBlock(Bloque block) {
-        BloquesAsignados.insertFinal(block);
-        blockCount++;
+    public void asignarBloque(Bloque bloque) {
+        bloquesAsignados.insertFinal(bloque);
+        cantidadBloques++;
     }
     
-    public void clearBlocks() {
-        BloquesAsignados.clear();
-        blockCount = 0;
+    public void liberarBloques() {
+        bloquesAsignados.clear();
+        cantidadBloques = 0;
     }
     
-    public int getFirstBlockNumber() {
-        if (BloquesAsignados.isEmpty() || blockCount == 0) {
+    public int obtenerPrimerBloque() {
+        if (bloquesAsignados.isEmpty() || cantidadBloques == 0) {
             return -1;
         }
-        Bloque firstBlock = (Bloque) BloquesAsignados.get(0);
-        return firstBlock.getBlockNumber();
+        Bloque primerBloque = (Bloque) bloquesAsignados.get(0);
+        return primerBloque.getNumeroBloque();
     }
     
-    // ===== OPERACIONES DE PERMISOS =====
-    
-    public boolean setPublicRead(boolean allowed, String username, boolean isAdmin) {
-        if (!propietario.equals(username) && !isAdmin) {
+    public boolean establecerLecturaPublica(boolean permitido, String usuario, boolean esAdmin) {
+        if (!propietario.equals(usuario) && !esAdmin) {
             System.out.println("Error: Solo el propietario o administrador puede cambiar permisos");
             return false;
         }
         
-        permisos.setPublicRead(allowed);
-        System.out.println("Permiso de lectura " + (allowed ? "concedido" : "revocado") + " para todos los usuarios");
+        permisos.establecerLecturaPublica(permitido);
+        System.out.println("Lectura pública " + (permitido ? "habilitada" : "deshabilitada"));
         return true;
     }
     
-    public boolean setPublicWrite(boolean allowed, String username, boolean isAdmin) {
-        if (!propietario.equals(username) && !isAdmin) {
+    public boolean establecerEscrituraPublica(boolean permitido, String usuario, boolean esAdmin) {
+        if (!propietario.equals(usuario) && !esAdmin) {
             System.out.println("Error: Solo el propietario o administrador puede cambiar permisos");
             return false;
         }
         
-        permisos.setPublicWrite(allowed);
-        System.out.println("Permiso de escritura " + (allowed ? "concedido" : "revocado") + " para todos los usuarios");
+        permisos.establecerEscrituraPublica(permitido);
+        System.out.println("Escritura pública " + (permitido ? "habilitada" : "deshabilitada"));
         return true;
     }
     
-    // ===== VERIFICACIONES DE PERMISOS =====
-    
-    public boolean canRead(String username, boolean isAdmin) {
-        return permisos.canRead(username, isAdmin);
+    public boolean puedeLeer(String usuario, boolean esAdmin) {
+        return permisos.puedeLeer(usuario, esAdmin);
     }
     
-    public boolean canWrite(String username, boolean isAdmin) {
-        return permisos.canWrite(username, isAdmin);
+    public boolean puedeEscribir(String usuario, boolean esAdmin) {
+        return permisos.puedeEscribir(usuario, esAdmin);
     }
     
-    public boolean canExecute(String username, boolean isAdmin) {
-        return permisos.canExecute(username, isAdmin);
+    public boolean puedeEjecutar(String usuario, boolean esAdmin) {
+        return permisos.puedeEjecutar(usuario, esAdmin);
     }
     
-    // ===== GETTERS Y SETTERS =====
+    public String getNombre() { return nombre; }
+    public String getPropietario() { return propietario; }
+    public int getTamaño() { return tamaño; }
+    public int getCantidadBloques() { return cantidadBloques; }
+    public ListaSimple getBloquesAsignados() { return bloquesAsignados; }
+    public Permisos getPermisos() { return permisos; }
+    public String getFechaCreacion() { return fechaCreacion; }
+    public String getFechaModificacion() { return fechaModificacion; }
+    public String getContenido() { return contenido; }
     
-    public String getName() { return nombre; }
-    public String getOwner() { return propietario; }
-    public int getSize() { return tamaño; }
-    public int getBlockCount() { return blockCount; }
-    public ListaSimple getAllocatedBlocks() { return BloquesAsignados; }
-    public Permisos getPermissions() { return permisos; }
-    public String getCreationDate() { return fechadecreacion; }
-    public String getLastModified() { return lastModified; }
-    public String getContent() { return content; }
-    
-    public void setSize(int size) { this.tamaño = size; }
-    public void setBlockCount(int blockCount) { this.blockCount = blockCount; }
-    
-    // ===== INFORMACIÓN DEL ARCHIVO =====
-    
-    public void displayFileInfo() {
+    public void mostrarInformacion() {
         System.out.println("=== INFORMACIÓN DEL ARCHIVO ===");
         System.out.println("Nombre: " + nombre);
         System.out.println("Propietario: " + propietario);
         System.out.println("Tamaño: " + tamaño + " caracteres");
-        System.out.println("Bloques asignados: " + blockCount);
-        System.out.println("Primer bloque: " + getFirstBlockNumber());
-        System.out.println("Creado: " + fechadecreacion);
-        System.out.println("Modificado: " + lastModified);
-        System.out.println("Permisos: " + permisos.getPermissionString());
-        System.out.println("Contenido: \"" + (content.length() > 50 ? content.substring(0, 50) + "..." : content) + "\"");
+        System.out.println("Bloques: " + cantidadBloques);
+        System.out.println("Primer bloque: " + obtenerPrimerBloque());
+        System.out.println("Creado: " + fechaCreacion);
+        System.out.println("Modificado: " + fechaModificacion);
+        System.out.println("Permisos: " + permisos.obtenerCadenaPermisos());
+        System.out.println("Contenido: \"" + (contenido.length() > 50 ? contenido.substring(0, 50) + "..." : contenido) + "\"");
     }
     
-    public String getFileSummary() {
-        return String.format("%-20s %-10s %-8d %-6d %-6d", 
-            nombre, propietario, tamaño, blockCount, getFirstBlockNumber());
+    public String obtenerResumen() {
+        return String.format("%-20s %-12s %-8d %-6d %-8d", 
+            nombre, propietario, tamaño, cantidadBloques, obtenerPrimerBloque());
     }
     
     @Override
     public String toString() {
-        return "FileEntry{name='" + nombre + "', owner='" + propietario + "', size=" + tamaño + 
-               " chars, blocks=" + blockCount + ", modified=" + lastModified + "}";
+        return "Archivo{nombre='" + nombre + "', propietario='" + propietario + 
+               "', tamaño=" + tamaño + " chars, bloques=" + cantidadBloques + "}";
+    }
+    
+    private String obtenerFechaActual() {
+        return java.time.LocalDateTime.now().toString();
     }
 }

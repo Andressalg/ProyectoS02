@@ -8,167 +8,90 @@ package GestionIO;
  *
  * @author Andres Salgueiro
  */
-
-import Enums.EstadosProceso;
-import java.util.concurrent.atomic.AtomicInteger;
-
 public class Proceso {
-    private static final AtomicInteger ID_GENERATOR = new AtomicInteger(1);
+    public static final int NEW = 1;
+    public static final int READY = 2;
+    public static final int RUNNING = 3;
+    public static final int BLOCKED = 4;
+    public static final int TERMINATED = 5;
     
-    private final int id;
-    private final String name;
-    private EstadosProceso state;
-    private final int totalInstructions;
-    private int programCounter;
-    private int mar;
-    private final int cyclesToException;
-    private final int cyclesToCompleteException;
-    private int remainingInstructions;
-    private long waitingTime;
-    private long turnaroundTime;
-    private long responseTime;
-    private final long creationTime;
-    private final int priority;
-    private final int memorySize;
-    private long lastReadyQueueTime;
+    private int processId;
+    private String processName;
+    private String userName;
+    private int state;
+    private SolicitudIO currentRequest;
+    private long creationTime;
+    private long startTime;
+    private long endTime;
     
-    public Proceso(String name, int totalInstructions, 
-               int cyclesToException, int cyclesToCompleteException,
-               int priority, int memorySize) {
-        this.id = ID_GENERATOR.getAndIncrement();
-        this.name = name;
-        this.totalInstructions = totalInstructions;
-        this.remainingInstructions = totalInstructions;
-        this.cyclesToException = cyclesToException;
-        this.cyclesToCompleteException = cyclesToCompleteException;
-        this.priority = priority;
-        this.memorySize = memorySize;
-        this.state = EstadosProceso.NUEVO;
-        this.programCounter = 0;
-        this.mar = 0;
+    public Proceso(int processId, String processName, String userName) {
+        this.processId = processId;
+        this.processName = processName;
+        this.userName = userName;
+        this.state = NEW;
+        this.currentRequest = null;
         this.creationTime = System.currentTimeMillis();
-        this.lastReadyQueueTime = 0;
+        this.startTime = -1;
+        this.endTime = -1;
     }
     
-    // Getters y Setters
-    public int getId() { return id; }
-    public String getName() { return name; }
-    public EstadosProceso getState() { return state; }
-    public void setState(EstadosProceso state) { this.state = state; }
-    public int getTotalInstructions() { return totalInstructions; }
-    public int getProgramCounter() { return programCounter; }
-    public void setProgramCounter(int programCounter) { this.programCounter = programCounter; }
-    public int getMAR() { return mar; }
-    public void setMAR(int mar) { this.mar = mar; }
-    public int getCyclesToException() { return cyclesToException; }
-    public int getCyclesToCompleteException() { return cyclesToCompleteException; }
-    public int getRemainingInstructions() { return remainingInstructions; }
-    public void setRemainingInstructions(int remainingInstructions) { 
-        this.remainingInstructions = remainingInstructions; 
-    }
-    public long getWaitingTime() { return waitingTime; }
-    public void setWaitingTime(long waitingTime) { this.waitingTime = waitingTime; }
-    public long getTurnaroundTime() { return turnaroundTime; }
-    public void setTurnaroundTime(long turnaroundTime) { this.turnaroundTime = turnaroundTime; }
-    public long getResponseTime() { return responseTime; }
-    public void setResponseTime(long responseTime) { this.responseTime = responseTime; }
+    // Getters
+    public int getProcessId() { return processId; }
+    public String getProcessName() { return processName; }
+    public String getUserName() { return userName; }
+    public int getState() { return state; }
+    public SolicitudIO getCurrentRequest() { return currentRequest; }
     public long getCreationTime() { return creationTime; }
-    public int getPriority() { return priority; }
-    public int getMemorySize() { return memorySize; }
-    public long getLastReadyQueueTime() { return lastReadyQueueTime; }
-    public void setLastReadyQueueTime(long time) { this.lastReadyQueueTime = time; }
-    public int getServiceTime() { return totalInstructions;}
+    public long getStartTime() { return startTime; }
+    public long getEndTime() { return endTime; }
     
-    /**
-     * Lógica de ejecución 
-     * @return 
-     */
-    public boolean executeInstruction() {
-        if (remainingInstructions <= 0) {
-            state = EstadosProceso.TERMINADO;
-            return true;
+    // State management
+    public void setReady() { 
+        this.state = READY; 
+        if (startTime == -1) {
+            startTime = System.currentTimeMillis();
         }
-        
-        programCounter++;
-        mar = programCounter;
-        remainingInstructions--;
-        
-        if (this.type == ProcessType.IO_BOUND &&
-            cyclesToException > 0 && 
-            programCounter > 0 && 
-            programCounter % cyclesToException == 0 &&
-            state == EstadosProceso.EJECUTANDO) {
-            
-            System.out.println("Generando excepción para: " + name + " (" + type + ") en PC: " + programCounter);
-            generateException();
-            return false; // El proceso se bloquea
-        }
-        
-        if (remainingInstructions == 0) {
-            state = EstadosProceso.TERMINADO;
-            return true;
-        }
-        
-        return false;
     }
     
-    /**
-     * Generar excepción 
-     */
-    private void generateException() {
-        state = EstadosProceso.BLOQUEADO;
-        
-        if (scheduler != null) {
-            this.setState(EstadosProceso.BLOQUEADO);
+    public void setRunning() { 
+        this.state = RUNNING; 
+    }
+    
+    public void setBlocked() { 
+        this.state = BLOCKED; 
+    }
+    
+    public void setTerminated() { 
+        this.state = TERMINATED; 
+        this.endTime = System.currentTimeMillis();
+    }
+    
+    public void setCurrentRequest(SolicitudIO request) {
+        this.currentRequest = request;
+    }
+    
+    public String getStateName() {
+        switch (state) {
+            case NEW: return "NEW";
+            case READY: return "READY";
+            case RUNNING: return "RUNNING";
+            case BLOCKED: return "BLOCKED";
+            case TERMINATED: return "TERMINATED";
+            default: return "UNKNOWN";
         }
-        
-        javax.swing.SwingWorker<Void, Void> worker = new javax.swing.SwingWorker<Void, Void>() {
-            @Override
-            protected Void doInBackground() throws Exception {
-                try {
-                    System.out.println("Iniciando operación de excepción para: " + name);
-                    
-                    for (int i = 0; i < cyclesToCompleteException; i++) {
-                        Thread.sleep(scheduler.getCycleDuration());
-
-                        setMAR(getMAR() + 1); 
-
-                        System.out.println("Progreso excepción " + name + ": " + (i+1) + "/" + cyclesToCompleteException);
-                    }
-                    
-                    System.out.println("Operación de excepción completada para: " + name);
-                    
-                } catch (InterruptedException e) {
-                    System.out.println("Operación de excepción interrumpida para: " + name);
-                    Thread.currentThread().interrupt();
-                } catch (Exception e) {
-                    System.err.println("Error en operación de excepción para " + name + ": " + e.getMessage());
-                }
-                return null;
-            }
-            
-            @Override
-            protected void done() {
-                if (scheduler != null) {
-                    scheduler.unblockProcess(Proceso.this);
-                }
-            }
-        };
-        
-        worker.execute();
     }
     
-    public void incrementWaitingTime() {
-        this.waitingTime++;
+    public long getExecutionTime() {
+        if (startTime == -1) return 0;
+        if (endTime == -1) return System.currentTimeMillis() - startTime;
+        return endTime - startTime;
     }
     
-    public int compareTo(Proceso other) {
-        return Long.compare(this.creationTime, other.creationTime);
+    public boolean isActive() {
+        return state != TERMINATED;
     }
     
-    @Override
-    public String toString() {
-        return String.format("PCB{id=%d, name='%s', state=%s, PC=%d, MAR=%d, remaining=%d}", 
-                           id, name, state, programCounter, mar, remainingInstructions);
+    public boolean canBeScheduled() {
+        return state == READY || state == BLOCKED;
     }
 }

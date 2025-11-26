@@ -10,101 +10,225 @@ package Usuario;
  */
 
 public class Permisos {
-    public static final int READ = 1;
-    public static final int WRITE = 2;
-    public static final int EXECUTE = 4;
-    public static final int ALL = READ | WRITE | EXECUTE;
+    public static final int LECTURA = 1;
+    public static final int ESCRITURA = 2;
+    public static final int EJECUCION = 4;
+    public static final int TODOS = LECTURA | ESCRITURA | EJECUCION;
     
-    private String owner;
-    private int userPermissions;  // Permisos del dueño
-    private int groupPermissions; // Permisos del grupo
-    private int otherPermissions; // Permisos de otros
+    private String propietario;
+    private int permisosUsuario;   // Permisos del propietario
+    private int permisosGrupo;     // Permisos del grupo
+    private int permisosOtros;     // Permisos de otros usuarios
     
-    public Permisos(String owner) {
-        this.owner = owner;
-        this.userPermissions = ALL;
-        this.groupPermissions = READ;
-        this.otherPermissions = READ;
+    public Permisos(String propietario) {
+        this.propietario = propietario;
+        this.permisosUsuario = TODOS;
+        this.permisosGrupo = LECTURA;
+        this.permisosOtros = LECTURA;
     }
     
-    public Permisos(String owner, int userPerm, int groupPerm, int otherPerm) {
-        this.owner = owner;
-        this.userPermissions = userPerm;
-        this.groupPermissions = groupPerm;
-        this.otherPermissions = otherPerm;
+    public Permisos(String propietario, int permisosUsuario, int permisosGrupo, int permisosOtros) {
+        this.propietario = propietario;
+        this.permisosUsuario = permisosUsuario;
+        this.permisosGrupo = permisosGrupo;
+        this.permisosOtros = permisosOtros;
     }
     
-    // Verificar permisos
-    public boolean canRead(String username, boolean isAdmin) {
-        if (isAdmin) return true;
-        if (owner.equals(username)) return (userPermissions & READ) != 0;
-        return (otherPermissions & READ) != 0; // Simplificado para el proyecto
+    // ===== VERIFICACIÓN DE PERMISOS =====
+    
+    public boolean puedeLeer(String usuario, boolean esAdmin) {
+        if (esAdmin) return true;
+        if (propietario.equals(usuario)) return (permisosUsuario & LECTURA) != 0;
+        return (permisosOtros & LECTURA) != 0;
     }
     
-    public boolean canWrite(String username, boolean isAdmin) {
-        if (isAdmin) return true;
-        if (owner.equals(username)) return (userPermissions & WRITE) != 0;
-        return (otherPermissions & WRITE) != 0;
+    public boolean puedeEscribir(String usuario, boolean esAdmin) {
+        if (esAdmin) return true;
+        if (propietario.equals(usuario)) return (permisosUsuario & ESCRITURA) != 0;
+        return (permisosOtros & ESCRITURA) != 0;
     }
     
-    public boolean canExecute(String username, boolean isAdmin) {
-        if (isAdmin) return true;
-        if (owner.equals(username)) return (userPermissions & EXECUTE) != 0;
-        return (otherPermissions & EXECUTE) != 0;
+    public boolean puedeEjecutar(String usuario, boolean esAdmin) {
+        if (esAdmin) return true;
+        if (propietario.equals(usuario)) return (permisosUsuario & EJECUCION) != 0;
+        return (permisosOtros & EJECUCION) != 0;
     }
     
-    // Setters para permisos
-    public void setUserPermissions(int permissions) {
-        this.userPermissions = permissions;
+    // ===== CONFIGURACIÓN DE PERMISOS DEL PROPIETARIO =====
+    
+    public void establecerPermisosUsuario(int permisos) {
+        this.permisosUsuario = permisos;
     }
     
-    public void setGroupPermissions(int permissions) {
-        this.groupPermissions = permissions;
-    }
-    
-    public void setOtherPermissions(int permissions) {
-        this.otherPermissions = permissions;
-    }
-    
-    public void setPublicRead(boolean allowed) {
-        if (allowed) {
-            otherPermissions |= READ;
+    public void habilitarLecturaUsuario(boolean habilitar) {
+        if (habilitar) {
+            permisosUsuario |= LECTURA;
         } else {
-            otherPermissions &= ~READ;
+            permisosUsuario &= ~LECTURA;
         }
     }
     
-    public void setPublicWrite(boolean allowed) {
-        if (allowed) {
-            otherPermissions |= WRITE;
+    public void habilitarEscrituraUsuario(boolean habilitar) {
+        if (habilitar) {
+            permisosUsuario |= ESCRITURA;
         } else {
-            otherPermissions &= ~WRITE;
+            permisosUsuario &= ~ESCRITURA;
         }
     }
     
-    // Getters
-    public String getOwner() {
-        return owner;
+    public void habilitarEjecucionUsuario(boolean habilitar) {
+        if (habilitar) {
+            permisosUsuario |= EJECUCION;
+        } else {
+            permisosUsuario &= ~EJECUCION;
+        }
     }
     
-    public int getUserPermissions() {
-        return userPermissions;
+    // ===== CONFIGURACIÓN DE PERMISOS PÚBLICOS =====
+    
+    public void establecerPermisosOtros(int permisos) {
+        this.permisosOtros = permisos;
     }
     
-    public int getGroupPermissions() {
-        return groupPermissions;
+    public void establecerLecturaPublica(boolean permitido) {
+        if (permitido) {
+            permisosOtros |= LECTURA;
+        } else {
+            permisosOtros &= ~LECTURA;
+        }
     }
     
-    public int getOtherPermissions() {
-        return otherPermissions;
+    public void establecerEscrituraPublica(boolean permitido) {
+        if (permitido) {
+            permisosOtros |= ESCRITURA;
+        } else {
+            permisosOtros &= ~ESCRITURA;
+        }
     }
     
-    public String getPermissionString() {
-        return String.format("U:%d G:%d O:%d", userPermissions, groupPermissions, otherPermissions);
+    public void establecerEjecucionPublica(boolean permitido) {
+        if (permitido) {
+            permisosOtros |= EJECUCION;
+        } else {
+            permisosOtros &= ~EJECUCION;
+        }
+    }
+    
+    // ===== CONFIGURACIÓN DE PERMISOS DE GRUPO =====
+    
+    public void establecerPermisosGrupo(int permisos) {
+        this.permisosGrupo = permisos;
+    }
+    
+    public void habilitarLecturaGrupo(boolean habilitar) {
+        if (habilitar) {
+            permisosGrupo |= LECTURA;
+        } else {
+            permisosGrupo &= ~LECTURA;
+        }
+    }
+    
+    public void habilitarEscrituraGrupo(boolean habilitar) {
+        if (habilitar) {
+            permisosGrupo |= ESCRITURA;
+        } else {
+            permisosGrupo &= ~ESCRITURA;
+        }
+    }
+    
+    // ===== GETTERS =====
+    
+    public String getPropietario() {
+        return propietario;
+    }
+    
+    public int getPermisosUsuario() {
+        return permisosUsuario;
+    }
+    
+    public int getPermisosGrupo() {
+        return permisosGrupo;
+    }
+    
+    public int getPermisosOtros() {
+        return permisosOtros;
+    }
+    
+    // ===== REPRESENTACIÓN DE PERMISOS =====
+    
+    public String obtenerCadenaPermisos() {
+        return String.format("U:%d G:%d O:%d", permisosUsuario, permisosGrupo, permisosOtros);
+    }
+    
+    public String obtenerCadenaSimbolica() {
+        String usuario = permisosToSymbol(permisosUsuario);
+        String grupo = permisosToSymbol(permisosGrupo);
+        String otros = permisosToSymbol(permisosOtros);
+        return usuario + grupo + otros;
+    }
+    
+    private String permisosToSymbol(int permisos) {
+        StringBuilder sb = new StringBuilder();
+        sb.append((permisos & LECTURA) != 0 ? "r" : "-");
+        sb.append((permisos & ESCRITURA) != 0 ? "w" : "-");
+        sb.append((permisos & EJECUCION) != 0 ? "x" : "-");
+        return sb.toString();
+    }
+    
+    // ===== PERMISOS PREDEFINIDOS =====
+    
+    public void establecerPermisosPrivados() {
+        permisosUsuario = TODOS;
+        permisosGrupo = 0;
+        permisosOtros = 0;
+    }
+    
+    public void establecerPermisosPublicos() {
+        permisosUsuario = TODOS;
+        permisosGrupo = LECTURA | ESCRITURA;
+        permisosOtros = LECTURA;
+    }
+    
+    public void establecerPermisosSoloLectura() {
+        permisosUsuario = LECTURA;
+        permisosGrupo = LECTURA;
+        permisosOtros = LECTURA;
+    }
+    
+    // ===== VALIDACIÓN =====
+    
+    public boolean sonPermisosValidos(int permisos) {
+        return permisos >= 0 && permisos <= 7; // 0-7 en octal (rwx)
+    }
+    
+    public boolean tienePermisosCompletos(String usuario) {
+        return propietario.equals(usuario) && permisosUsuario == TODOS;
+    }
+    
+    public boolean esSoloLectura() {
+        return permisosUsuario == LECTURA && permisosGrupo == LECTURA && permisosOtros == LECTURA;
+    }
+    
+    // ===== INFORMACIÓN =====
+    
+    public void mostrarPermisos() {
+        System.out.println("=== PERMISOS ===");
+        System.out.println("Propietario: " + propietario);
+        System.out.println("Usuario (U): " + obtenerCadenaPermisosDetallada(permisosUsuario));
+        System.out.println("Grupo (G): " + obtenerCadenaPermisosDetallada(permisosGrupo));
+        System.out.println("Otros (O): " + obtenerCadenaPermisosDetallada(permisosOtros));
+        System.out.println("Representación: " + obtenerCadenaSimbolica());
+    }
+    
+    private String obtenerCadenaPermisosDetallada(int permisos) {
+        String lectura = (permisos & LECTURA) != 0 ? "Lectura" : "Sin lectura";
+        String escritura = (permisos & ESCRITURA) != 0 ? "Escritura" : "Sin escritura";
+        String ejecucion = (permisos & EJECUCION) != 0 ? "Ejecución" : "Sin ejecución";
+        return String.format("%s, %s, %s", lectura, escritura, ejecucion);
     }
     
     @Override
     public String toString() {
-        return "Permission{owner='" + owner + "', permissions=" + getPermissionString() + "}";
+        return "Permisos{propietario='" + propietario + "', permisos=" + obtenerCadenaSimbolica() + "}";
     }
 }

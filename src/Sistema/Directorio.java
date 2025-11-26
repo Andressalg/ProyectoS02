@@ -12,73 +12,71 @@ import Usuario.Permisos;
  */
 public class Directorio {
     private String nombre;
-    private String path;
+    private String ruta;
     private String propietario;
-    private Permisos permisos;
+    private Usuario.Permisos permisos;
     private ListaSimple archivos;
     private ListaSimple subdirectorios;
-    private Directorio pariente;
+    private Directorio directorioPadre;
     
-    public Directorio String nombre, String propietario) {
+    public Directorio(String nombre, String propietario) {
         this.nombre = nombre;
         this.propietario = propietario;
-        this.path = nombre;
-        this.permisos = new Permisos(propietario);
+        this.ruta = nombre;
+        this.permisos = new Usuario.Permisos(propietario);
         this.archivos = new ListaSimple();
         this.subdirectorios = new ListaSimple();
-        this.pariente = null;
+        this.directorioPadre = null;
     }
     
-    public Directorio(String name, String owner, Directorio parent) {
+    public Directorio(String nombre, String propietario, Directorio directorioPadre) {
         this(nombre, propietario);
-        this.pariente = parent;
-        this.path = parent.getPath() + "/" + name;
+        this.directorioPadre = directorioPadre;
+        this.ruta = directorioPadre.getRuta() + "/" + nombre;
     }
     
-    // Métodos para archivos
-    public boolean addFile(Archivo file) {
-        if (getFile(file.getName()) != null) {
-            return false; // Archivo ya existe
+    public boolean agregarArchivo(Archivo archivo) {
+        if (obtenerArchivo(archivo.getNombre()) != null) {
+            return false;
         }
-        archivos.insertFinal(file);
+        archivos.insertFinal(archivo);
         return true;
     }
     
-    public boolean removeFile(String fileName) {
+    public boolean eliminarArchivo(String nombreArchivo) {
         for (int i = 0; i < archivos.getSize(); i++) {
-            Archivo = (Archivo) archivos.get(i);
-            if (file.getName().equals(fileName)) {
-                archivos.remove(file);
+            Archivo archivo = (Archivo) archivos.get(i);
+            if (archivo.getNombre().equals(nombreArchivo)) {
+                archivos.remove(archivo);
                 return true;
             }
         }
         return false;
     }
     
-    public Archivo getFile(String fileName) {
+    public Archivo obtenerArchivo(String nombreArchivo) {
         for (int i = 0; i < archivos.getSize(); i++) {
-            Archivo file = (Archivo) archivos.get(i);
-            if (file.getName().equals(fileName)) {
-                return file;
+            Archivo archivo = (Archivo) archivos.get(i);
+            if (archivo.getNombre().equals(nombreArchivo)) {
+                return archivo;
             }
         }
         return null;
     }
     
-    // Métodos para subdirectorios
-    public boolean addSubdirectory(Directorio directory) {
-        if (getSubdirectory(directory.getName()) != null) {
-            return false; // Directorio ya existe
+    public boolean agregarSubdirectorio(Directorio directorio) {
+        if (obtenerSubdirectorio(directorio.getNombre()) != null) {
+            return false;
         }
-        subdirectorios.insertFinal(directory);
-        directory.setParent(this);
+        subdirectorios.insertFinal(directorio);
+        directorio.setDirectorioPadre(this);
         return true;
     }
     
-    public boolean removeSubdirectory(String dirName) {
+    public boolean eliminarSubdirectorio(String nombreDirectorio) {
         for (int i = 0; i < subdirectorios.getSize(); i++) {
             Directorio dir = (Directorio) subdirectorios.get(i);
-            if (dir.getName().equals(dirName)) {
+            if (dir.getNombre().equals(nombreDirectorio)) {
                 subdirectorios.remove(dir);
                 return true;
             }
@@ -86,63 +84,76 @@ public class Directorio {
         return false;
     }
     
-    public Directorio getSubdirectory(String dirName) {
+    public Directorio obtenerSubdirectorio(String nombreDirectorio) {
         for (int i = 0; i < subdirectorios.getSize(); i++) {
             Directorio dir = (Directorio) subdirectorios.get(i);
-            if (dir.getName().equals(dirName)) {
+            if (dir.getNombre().equals(nombreDirectorio)) {
                 return dir;
             }
         }
         return null;
     }
     
-    // Getters
-    public String getName() {
+    public String getNombre() {
         return nombre;
     }
     
-    public String getPath() {
-        return path;
+    public String getRuta() {
+        return ruta;
     }
     
-    public String getOwner() {
+    public String getPropietario() {
         return propietario;
     }
     
-    public Permisos getPermissions() {
+    public Usuario.Permisos getPermisos() {
         return permisos;
     }
     
-    public ListaSimple getFiles() {
+    public ListaSimple getArchivos() {
         return archivos;
     }
     
-    public ListaSimple getSubdirectories() {
+    public ListaSimple getSubdirectorios() {
         return subdirectorios;
     }
     
-    public Directorio getParent() {
-        return pariente;
+    public Directorio getDirectorioPadre() {
+        return directorioPadre;
     }
     
-    // Setters
-    public void setName(String name) {
-        this.nombre = name;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
     
-    public void setPath(String path) {
-        this.path = path;
+    public void setRuta(String ruta) {
+        this.ruta = ruta;
     }
     
-    public void setOwner(String owner) {
-        this.propietario = owner;
+    public void setPropietario(String propietario) {
+        this.propietario = propietario;
     }
     
-    public void setParent(Directorio parent) {
-        this.pariente = parent;
+    public void setDirectorioPadre(Directorio directorioPadre) {
+        this.directorioPadre = directorioPadre;
     }
     
-    public boolean isEmpty() {
+    public boolean estaVacio() {
         return archivos.isEmpty() && subdirectorios.isEmpty();
+    }
+    
+    public int getTamañoTotal() {
+        int tamaño = 0;
+        for (int i = 0; i < archivos.getSize(); i++) {
+            Archivo archivo = (Archivo) archivos.get(i);
+            tamaño += archivo.getTamaño();
+        }
+        return tamaño;
+    }
+    
+    @Override
+    public String toString() {
+        return "Directorio{nombre='" + nombre + "', ruta='" + ruta + "', propietario='" + propietario + 
+               "', archivos=" + archivos.getSize() + ", subdirs=" + subdirectorios.getSize() + "}";
     }
 }

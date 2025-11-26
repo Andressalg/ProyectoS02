@@ -9,96 +9,117 @@ import EDD.ListaSimple;
  *
  * @author Andres Salgueiro
  */
-public class Disco {
-    private int EspacioEnDisco;
-    private int blockSize;
-    private int BloquesTotal;
-    private ListaSimple bloques;
-    private int BloquesLibres;
-    
-public Disco (int EspacioEnDisco, int blockSize) {
-        this.EspacioEnDisco = EspacioEnDisco;
-        this.blockSize = blockSize;
-        this.BloquesTotal = EspacioEnDisco / blockSize;
-        this.BloquesLibres = BloquesTotal;
-        this.bloques = new ListaSimple();
-        initializeBlocks();
+import EDD.ListaSimple;
+import GestionIO.SolicitudIO;
 
-private void initializeBlocks() {
-        for (int i = 0; i < BloquesTotal; i++) {
-            Bloque block = new Bloque(i);
-            bloques.insertFinal(block);
+public class Disco {
+    private ManejadorPolitica politicaActual;
+    private ListaSimple solicitudesPendientes;
+    private int posicionCabezaActual;
+    private int operacionesBusquedaTotales;
+    private long tiempoBusquedaTotal;
+    
+    public Disco() {
+        this.solicitudesPendientes = new ListaSimple();
+        this.posicionCabezaActual = 0;
+        this.operacionesBusquedaTotales = 0;
+        this.tiempoBusquedaTotal = 0;
+    }
+    
+    public void establecerPolitica(ManejadorPolitica politica) {
+        this.politicaActual = politica;
+        System.out.println("Política de disco cambiada a: " + politica.getPolicyName());
+    }
+    
+    public void agregarSolicitud(SolicitudIO solicitud) {
+        if (solicitud.getBloqueObjetivo() != -1) {
+            solicitudesPendientes.insertFinal(solicitud.getBloqueObjetivo());
+            System.out.println("Solicitud E/S agregada: Bloque " + solicitud.getBloqueObjetivo() + " para " + solicitud.getNombreArchivo());
         }
     }
     
-    public Bloque getBlock(int blockNumber) {
-        if (blockNumber >= 0 && blockNumber < BloquesTotal) {
-            return (Bloque) bloques.get(blockNumber);
+    public int obtenerSiguienteBloque() {
+        if (solicitudesPendientes.isEmpty()) {
+            return posicionCabezaActual;
         }
-        return null;
+        
+        long tiempoInicio = System.nanoTime();
+        int siguienteBloque = politicaActual.getNextBlock(solicitudesPendientes, posicionCabezaActual);
+        long tiempoFin = System.nanoTime();
+        
+        int distanciaBusqueda = Math.abs(siguienteBloque - posicionCabezaActual);
+        operacionesBusquedaTotales++;
+        tiempoBusquedaTotal += (tiempoFin - tiempoInicio) / 1000000;
+        
+        removerBloqueServido(siguienteBloque);
+        
+        posicionCabezaActual = siguienteBloque;
+        politicaActual.setCurrentHead(posicionCabezaActual);
+        
+        System.out.println("Disco: Cabeza movida a bloque " + siguienteBloque + " (distancia: " + distanciaBusqueda + ")");
+        return siguienteBloque;
     }
     
-    public ListaSimple allocateBlocks(int numBlocks, String fileName, String processName) {
-        if (numBlocks > BloquesLibres) {
-            return null; // No hay suficiente espacio
-        }
-        
-        ListaSimple allocatedBlocks = new ListaSimple();
-        int allocated = 0;
-        
-        for (int i = 0; i < BloquesTotal && allocated < numBlocks; i++) {
-            Bloque bloque = (Bloque) bloques.get(i);
-            if (!bloque.isOccupied()) {
-                bloque.setOccupied(true);
-                bloque.setOwnerFile(fileName);
-                bloque.setOwnerProcess(processName);
-                allocatedBlocks.insertFinal(bloque);
-                allocated++;
-                BloquesLibres--;
+    private void removerBloqueServido(int numeroBloque) {
+        for (int i = 0; i < solicitudesPendientes.getSize(); i++) {
+            int bloque = (int) solicitudesPendientes.get(i);
+            if (bloque == numeroBloque) {
+                solicitudesPendientes.remove(bloque);
+                break;
             }
         }
+    }
+    
+    public void completarSolicitud(SolicitudIO solicitud) {
+        if (solicitud.getBloqueObjetivo() != -1) {
+            removerBloqueServido(solicitud.getBloqueObjetivo());
+            solicitud.setEstado("COMPLETADA");
+            System.out.println("Solicitud E/S completada: " + solicitud.getNombreArchivo());
+        }
+    }
+    
+    public int getCantidadSolicitudesPendientes() {
+        return solicitudesPendientes.getSize();
+    }
+    
+    public int getPosicionCabezaActual() {
+        return posicionCabezaActual;
+    }
+    
+    public void setPosicionCabezaActual(int posicion) {
+        this.posicionCabezaActual = posicion;
+        if (politicaActual != null) {
+            politicaActual.setCurrentHead(posicion);
+        }
+    }
+    
+    public String getNombrePoliticaActual() {
+        return politicaActual != null ? politicaActual.getPolicyName() : "Ninguna";
+    }
+    
+    public double getTiempoBusquedaPromedio() {
+        return operacionesBusquedaTotales > 0 ? (double) tiempoBusquedaTotal / operacionesBusquedaTotales : 0;
+    }
+    
+    public void mostrarEstado() {
+        System.out.println("=== ESTADO DEL DISCO ===");
+        System.out.println("Política actual: " + getNombrePoliticaActual());
+        System.out.println("Posición de cabeza: " + posicionCabezaActual);
+        System.out.println("Solicitudes pendientes: " + solicitudesPendientes.getSize());
+        System.out.println("Operaciones de búsqueda: " + operacionesBusquedaTotales);
+        System.out.println("Tiempo promedio de búsqueda: " + String.format("%.2f", getTiempoBusquedaPromedio()) + " ms");
         
-        return allocatedBlocks;
-    }
-    
-    public boolean freeBlocks(ListaSimple blocksToFree) {
-        for (int i = 0; i < blocksToFree.getSize(); i++) {
-            Bloque block = (Bloque) blocksToFree.get(i);
-            block.clearBlock();
-            BloquesLibres++;
+        if (!solicitudesPendientes.isEmpty()) {
+            System.out.println("Solicitudes pendientes:");
+            for (int i = 0; i < solicitudesPendientes.getSize(); i++) {
+                System.out.print("[" + solicitudesPendientes.get(i) + "] ");
+            }
+            System.out.println();
         }
-        return true;
     }
     
-    public boolean freeBlock(int blockNumber) {
-        Bloque bloque = getBlock(blockNumber);
-        if (bloque != null && bloque.isOccupied()) {
-            bloque.clearBlock();
-            BloquesLibres++;
-            return true;
-        }
-        return false;
+    public void limpiarSolicitudesPendientes() {
+        solicitudesPendientes.clear();
+        System.out.println("Todas las solicitudes pendientes han sido limpiadas");
     }
-    
-    public int getFreeBlocks() {
-        return BloquesLibres;
-    }
-    
-    public int getTotalBlocks() {
-        return BloquesTotal;
-    }
-    
-    public int getUsedBlocks() {
-        return BloquesTotal - BloquesLibres;
-    }
-    
-    public ListaSimple getAllBlocks() {
-        return bloques;
-    }
-    
-    public double getFragmentationPercentage() {
-        if (BloquesTotal == 0) return 0;
-        return ((double) getUsedBlocks() / BloquesTotal) * 100;
-    }
-
 }
