@@ -3,7 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package GestionIO;
-
 import EDD.Cola;
 import EDD.ListaSimple;
 
@@ -11,9 +10,6 @@ import EDD.ListaSimple;
  *
  * @author Andres Salgueiro
  */
-import EDD.Cola;
-import EDD.ListaSimple;
-
 public class ManejadorProcesos {
     private final ListaSimple procesos;
     private Cola colaListos;

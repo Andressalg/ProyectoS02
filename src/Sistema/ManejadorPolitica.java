@@ -9,8 +9,8 @@ import EDD.ListaSimple;
  *
  * @author Andres Salgueiro
  */
-public interface ManejadorPolitica { //CLASE ABSTRACTA PARA OPTIMIZAR SU USO
-    String getPolicyName();
-    int getNextBlock(ListaSimple pendingRequests, int currentHead);
-    void setCurrentHead(int head);
+public interface ManejadorPolitica {
+    String getNombrePolitica();
+    int obtenerSiguienteBloque(ListaSimple solicitudesPendientes, int cabezaActual);
+    void establecerCabezaActual(int cabeza);
 }

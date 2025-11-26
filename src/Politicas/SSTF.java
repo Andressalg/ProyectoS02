@@ -1,46 +1,54 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package Politicas;
+
+/**
+ *
+ * @author Andres Salgueiro
+ */
 
 import Sistema.ManejadorPolitica;
 import EDD.ListaSimple;
 
 public class SSTF implements ManejadorPolitica {
-    private int currentHead;
+    private int cabezaActual;
     
     public SSTF() {
-        this.currentHead = 0;
+        this.cabezaActual = 0;
     }
     
     @Override
-    public String getPolicyName() {
+    public String getNombrePolitica() {
         return "SSTF";
     }
     
     @Override
-    public int getNextBlock(ListaSimple pendingRequests, int currentHead) {
-        if (pendingRequests.isEmpty()) {
-            return currentHead;
+    public int obtenerSiguienteBloque(ListaSimple solicitudesPendientes, int cabezaActual) {
+        if (solicitudesPendientes.isEmpty()) {
+            return cabezaActual;
         }
         
-        this.currentHead = currentHead;
-        int closestRequest = -1;
-        int minDistance = Integer.MAX_VALUE;
+        this.cabezaActual = cabezaActual;
+        int solicitudMasCercana = -1;
+        int distanciaMinima = Integer.MAX_VALUE;
         
-        // Encontrar el request más cercano a la cabeza actual
-        for (int i = 0; i < pendingRequests.getSize(); i++) {
-            int request = (int) pendingRequests.get(i);
-            int distance = Math.abs(request - currentHead);
+        for (int i = 0; i < solicitudesPendientes.getSize(); i++) {
+            int solicitud = (int) solicitudesPendientes.get(i);
+            int distancia = Math.abs(solicitud - cabezaActual);
             
-            if (distance < minDistance) {
-                minDistance = distance;
-                closestRequest = request;
+            if (distancia < distanciaMinima) {
+                distanciaMinima = distancia;
+                solicitudMasCercana = solicitud;
             }
         }
         
-        return closestRequest;
+        return solicitudMasCercana;
     }
     
     @Override
-    public void setCurrentHead(int head) {
-        this.currentHead = head;
+    public void establecerCabezaActual(int cabeza) {
+        this.cabezaActual = cabeza;
     }
 }

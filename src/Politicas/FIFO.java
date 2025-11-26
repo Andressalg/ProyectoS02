@@ -8,53 +8,28 @@ package Politicas;
  *
  * @author Andres Salgueiro
  */
-import EDD.Cola;
 import EDD.ListaSimple;
 import Sistema.ManejadorPolitica;
 
 public class FIFO implements ManejadorPolitica {
-    private Cola requestQueue;
     
-    public FIFO() {
-        this.requestQueue = new Cola();
-    }
+    public FIFO() {}
     
     @Override
-    public String getPolicyName() {
+    public String getNombrePolitica() {
         return "FIFO";
     }
     
     @Override
-    public int getNextBlock(ListaSimple pendingRequests, int currentHead) {
-        if (pendingRequests.isEmpty()) {
-            return currentHead;
+    public int obtenerSiguienteBloque(ListaSimple solicitudesPendientes, int cabezaActual) {
+        if (solicitudesPendientes.isEmpty()) {
+            return cabezaActual;
         }
         
-        // Para FIFO, simplemente retornamos el primer request en la lista
-        return (int) pendingRequests.get(0);
+        return (int) solicitudesPendientes.get(0);
     }
     
     @Override
-    public void setCurrentHead(int head) {
-        // FIFO no necesita trackear la cabeza actual
-    }
-    
-    public void addRequest(int blockNumber) {
-        requestQueue.encolar(blockNumber);
-    }
-    
-    public int getNextRequest() {
-        if (requestQueue.estaVacia()) {
-            return -1;
-        }
-        return (int) requestQueue.desencolar();
-    }
-    
-    public boolean hasPendingRequests() {
-        return !requestQueue.estaVacia();
-    }
-    
-    public int getQueueSize() {
-        return requestQueue.getTamano();
+    public void establecerCabezaActual(int cabeza) {
     }
 }

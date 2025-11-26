@@ -1,78 +1,82 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package Politicas;
+
+/**
+ *
+ * @author Andres Salgueiro
+ */
 
 import Sistema.ManejadorPolitica;
 import EDD.ListaSimple;
 
 public class CScan implements ManejadorPolitica {
-    private int currentHead;
-    private int diskSize;
+    private int cabezaActual;
+    private int tamañoDisco;
     
-    public CScan(int diskSize) {
-        this.diskSize = diskSize;
-        this.currentHead = 0;
+    public CScan(int tamañoDisco) {
+        this.tamañoDisco = tamañoDisco;
+        this.cabezaActual = 0;
     }
     
     @Override
-    public String getPolicyName() {
+    public String getNombrePolitica() {
         return "C-SCAN";
     }
     
     @Override
-    public int getNextBlock(ListaSimple pendingRequests, int currentHead) {
-        if (pendingRequests.isEmpty()) {
-            return currentHead;
+    public int obtenerSiguienteBloque(ListaSimple solicitudesPendientes, int cabezaActual) {
+        if (solicitudesPendientes.isEmpty()) {
+            return cabezaActual;
         }
         
-        this.currentHead = currentHead;
-        ListaSimple sortedRequests = sortRequests(pendingRequests);
+        this.cabezaActual = cabezaActual;
+        ListaSimple solicitudesOrdenadas = ordenarSolicitudes(solicitudesPendientes);
         
-        // Buscar el primer request mayor o igual a la cabeza actual
-        int nextBlock = -1;
-        for (int i = 0; i < sortedRequests.getSize(); i++) {
-            int request = (int) sortedRequests.get(i);
-            if (request >= currentHead) {
-                nextBlock = request;
+        int siguienteBloque = -1;
+        for (int i = 0; i < solicitudesOrdenadas.getSize(); i++) {
+            int solicitud = (int) solicitudesOrdenadas.get(i);
+            if (solicitud >= cabezaActual) {
+                siguienteBloque = solicitud;
                 break;
             }
         }
         
-        // Si no hay requests mayores, ir al inicio del disco
-        if (nextBlock == -1) {
-            nextBlock = (int) sortedRequests.get(0); // El más pequeño
+        if (siguienteBloque == -1) {
+            siguienteBloque = (int) solicitudesOrdenadas.get(0);
         }
         
-        return nextBlock;
+        return siguienteBloque;
     }
     
-    private ListaSimple sortRequests(ListaSimple requests) {
-        // Convertir a array para ordenar
-        int[] array = new int[requests.getSize()];
-        for (int i = 0; i < requests.getSize(); i++) {
-            array[i] = (int) requests.get(i);
+    @Override
+    public void establecerCabezaActual(int cabeza) {
+        this.cabezaActual = cabeza;
+    }
+    
+    private ListaSimple ordenarSolicitudes(ListaSimple solicitudes) {
+        int[] arreglo = new int[solicitudes.getSize()];
+        for (int i = 0; i < solicitudes.getSize(); i++) {
+            arreglo[i] = (int) solicitudes.get(i);
         }
         
-        // Ordenamiento burbuja
-        for (int i = 0; i < array.length - 1; i++) {
-            for (int j = 0; j < array.length - i - 1; j++) {
-                if (array[j] > array[j + 1]) {
-                    int temp = array[j];
-                    array[j] = array[j + 1];
-                    array[j + 1] = temp;
+        for (int i = 0; i < arreglo.length - 1; i++) {
+            for (int j = 0; j < arreglo.length - i - 1; j++) {
+                if (arreglo[j] > arreglo[j + 1]) {
+                    int temp = arreglo[j];
+                    arreglo[j] = arreglo[j + 1];
+                    arreglo[j + 1] = temp;
                 }
             }
         }
         
-        // Convertir de vuelta a ListaSimple
-        ListaSimple sorted = new ListaSimple();
-        for (int value : array) {
-            sorted.insertFinal(value);
+        ListaSimple ordenadas = new ListaSimple();
+        for (int valor : arreglo) {
+            ordenadas.insertFinal(valor);
         }
         
-        return sorted;
-    }
-    
-    @Override
-    public void setCurrentHead(int head) {
-        this.currentHead = head;
+        return ordenadas;
     }
 }

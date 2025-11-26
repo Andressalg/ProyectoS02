@@ -4,31 +4,32 @@
  */
 package Sistema;
 import EDD.ListaSimple;
+import GestionIO.SolicitudIO;
 
 /**
  *
  * @author Andres Salgueiro
  */
-import EDD.ListaSimple;
-import GestionIO.SolicitudIO;
-
 public class Disco {
     private ManejadorPolitica politicaActual;
     private ListaSimple solicitudesPendientes;
     private int posicionCabezaActual;
     private int operacionesBusquedaTotales;
     private long tiempoBusquedaTotal;
+    private int tamañoDisco;
     
-    public Disco() {
+    public Disco(int tamañoDisco) {
+        this.tamañoDisco = tamañoDisco;
         this.solicitudesPendientes = new ListaSimple();
         this.posicionCabezaActual = 0;
         this.operacionesBusquedaTotales = 0;
         this.tiempoBusquedaTotal = 0;
+        this.politicaActual = null;
     }
     
     public void establecerPolitica(ManejadorPolitica politica) {
         this.politicaActual = politica;
-        System.out.println("Política de disco cambiada a: " + politica.getPolicyName());
+        System.out.println("Política de disco cambiada a: " + politica.getNombrePolitica());
     }
     
     public void agregarSolicitud(SolicitudIO solicitud) {
@@ -43,8 +44,13 @@ public class Disco {
             return posicionCabezaActual;
         }
         
+        if (politicaActual == null) {
+            System.out.println("Error: No hay política establecida");
+            return posicionCabezaActual;
+        }
+        
         long tiempoInicio = System.nanoTime();
-        int siguienteBloque = politicaActual.getNextBlock(solicitudesPendientes, posicionCabezaActual);
+        int siguienteBloque = politicaActual.obtenerSiguienteBloque(solicitudesPendientes, posicionCabezaActual);
         long tiempoFin = System.nanoTime();
         
         int distanciaBusqueda = Math.abs(siguienteBloque - posicionCabezaActual);
@@ -54,7 +60,7 @@ public class Disco {
         removerBloqueServido(siguienteBloque);
         
         posicionCabezaActual = siguienteBloque;
-        politicaActual.setCurrentHead(posicionCabezaActual);
+        politicaActual.establecerCabezaActual(posicionCabezaActual);
         
         System.out.println("Disco: Cabeza movida a bloque " + siguienteBloque + " (distancia: " + distanciaBusqueda + ")");
         return siguienteBloque;
@@ -89,20 +95,29 @@ public class Disco {
     public void setPosicionCabezaActual(int posicion) {
         this.posicionCabezaActual = posicion;
         if (politicaActual != null) {
-            politicaActual.setCurrentHead(posicion);
+            politicaActual.establecerCabezaActual(posicion);
         }
     }
     
     public String getNombrePoliticaActual() {
-        return politicaActual != null ? politicaActual.getPolicyName() : "Ninguna";
+        return politicaActual != null ? politicaActual.getNombrePolitica() : "Ninguna";
     }
     
     public double getTiempoBusquedaPromedio() {
         return operacionesBusquedaTotales > 0 ? (double) tiempoBusquedaTotal / operacionesBusquedaTotales : 0;
     }
     
+    public int getTamañoDisco() {
+        return tamañoDisco;
+    }
+    
+    public ListaSimple getSolicitudesPendientes() {
+        return solicitudesPendientes;
+    }
+    
     public void mostrarEstado() {
         System.out.println("=== ESTADO DEL DISCO ===");
+        System.out.println("Tamaño del disco: " + tamañoDisco + " bloques");
         System.out.println("Política actual: " + getNombrePoliticaActual());
         System.out.println("Posición de cabeza: " + posicionCabezaActual);
         System.out.println("Solicitudes pendientes: " + solicitudesPendientes.getSize());
@@ -121,5 +136,9 @@ public class Disco {
     public void limpiarSolicitudesPendientes() {
         solicitudesPendientes.clear();
         System.out.println("Todas las solicitudes pendientes han sido limpiadas");
+    }
+    
+    public boolean tienePoliticaEstablecida() {
+        return politicaActual != null;
     }
 }
