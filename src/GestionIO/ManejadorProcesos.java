@@ -5,6 +5,8 @@
 package GestionIO;
 import EDD.Cola;
 import EDD.ListaSimple;
+import Enums.EstadosProceso;
+import Usuario.Usuario;
 
 /**
  *
@@ -23,8 +25,8 @@ public class ManejadorProcesos {
         this.siguienteIdProceso = 1;
     }
     
-    public Proceso crearProceso(String nombreProceso, String nombreUsuario) {
-        Proceso proceso = new Proceso(siguienteIdProceso++, nombreProceso, nombreUsuario);
+    public Proceso crearProceso(String nombreProceso, Usuario usuario) {
+        Proceso proceso = new Proceso(siguienteIdProceso++, nombreProceso, usuario);
         procesos.insertFinal(proceso);
         proceso.establecerListo();
         colaListos.encolar(proceso);
@@ -65,7 +67,7 @@ public class ManejadorProcesos {
     }
     
     public void desbloquearProceso(Proceso proceso) {
-        if (proceso != null && proceso.getEstado() == Proceso.BLOQUEADO) {
+        if (proceso != null && proceso.getEstado() == EstadosProceso.BLOQUEADO) {
             proceso.establecerListo();
             colaListos.encolar(proceso);
             removerDeColaBloqueados(proceso);
@@ -76,15 +78,20 @@ public class ManejadorProcesos {
     public void asignarSolicitudIO(Proceso proceso, SolicitudIO solicitud) {
         if (proceso != null && solicitud != null) {
             proceso.establecerSolicitudActual(solicitud);
+            proceso.getSolicitudesPendientes().encolar(solicitud);
             bloquearProceso(proceso);
-            System.out.println("Solicitud E/S asignada: " + solicitud.obtenerResumen() + " al proceso " + proceso.getNombreProceso());
+            System.out.println("Solicitud E/S asignada: " + solicitud.obtenerResumen() + 
+                             " al proceso " + proceso.getNombreProceso());
         }
     }
     
     public void completarSolicitudIO(Proceso proceso) {
-        if (proceso != null && proceso.getSolicitudActual() != null) {
-            proceso.getSolicitudActual().setEstado("COMPLETADA");
-            proceso.establecerSolicitudActual(null);
+        if (proceso != null) {
+            proceso.notificarIOCompletado();
+            if (proceso.getSolicitudActual() != null) {
+                proceso.getSolicitudActual().setEstado("COMPLETADA");
+                proceso.establecerSolicitudActual(null);
+            }
             desbloquearProceso(proceso);
             System.out.println("Solicitud E/S completada para proceso: " + proceso.getNombreProceso());
         }
@@ -136,7 +143,7 @@ public class ManejadorProcesos {
         ListaSimple listos = new ListaSimple();
         for (int i = 0; i < procesos.getSize(); i++) {
             Proceso proceso = (Proceso) procesos.get(i);
-            if (proceso.getEstado() == Proceso.LISTO) {
+            if (proceso.getEstado() == EstadosProceso.LISTO) {
                 listos.insertFinal(proceso);
             }
         }
@@ -147,7 +154,7 @@ public class ManejadorProcesos {
         ListaSimple bloqueados = new ListaSimple();
         for (int i = 0; i < procesos.getSize(); i++) {
             Proceso proceso = (Proceso) procesos.get(i);
-            if (proceso.getEstado() == Proceso.BLOQUEADO) {
+            if (proceso.getEstado() == EstadosProceso.BLOQUEADO) {
                 bloqueados.insertFinal(proceso);
             }
         }
@@ -158,6 +165,16 @@ public class ManejadorProcesos {
         for (int i = 0; i < procesos.getSize(); i++) {
             Proceso proceso = (Proceso) procesos.get(i);
             if (proceso.getIdProceso() == idProceso) {
+                return proceso;
+            }
+        }
+        return null;
+    }
+    
+    public Proceso obtenerProcesoPorNombre(String nombreProceso) {
+        for (int i = 0; i < procesos.getSize(); i++) {
+            Proceso proceso = (Proceso) procesos.get(i);
+            if (proceso.getNombreProceso().equals(nombreProceso)) {
                 return proceso;
             }
         }

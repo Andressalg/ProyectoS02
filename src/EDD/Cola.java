@@ -1,12 +1,10 @@
 package EDD;
-
-import EDD.Nodo;
-
 /**
  *
  * @author Buste
+ * @param <T>
  */
-public class Cola {
+public class Cola <T> {
     private Nodo frente;
     private Nodo finalCola;
     private int tamano;
