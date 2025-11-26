@@ -61,8 +61,12 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
         ModoUsuarioButton = new javax.swing.JRadioButton();
         ModoAdministradorButton = new javax.swing.JRadioButton();
         jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
         EmpezarSimulacionButton = new javax.swing.JButton();
+        GuardarConfigButton = new javax.swing.JButton();
+        CargarConfigButton = new javax.swing.JButton();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTableBloques = new javax.swing.JTable();
+        jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -152,8 +156,6 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
 
         jLabel6.setText("Política:");
 
-        jLabel7.setText("Bloques Libres:");
-
         EmpezarSimulacionButton.setText("Empezar Simulación");
         EmpezarSimulacionButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -161,15 +163,46 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
             }
         });
 
+        GuardarConfigButton.setText("Guardar Configuración");
+        GuardarConfigButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                GuardarConfigButtonActionPerformed(evt);
+            }
+        });
+
+        CargarConfigButton.setText("Cargar Configuración");
+        CargarConfigButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CargarConfigButtonActionPerformed(evt);
+            }
+        });
+
+        jTableBloques.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Bloque", "Estado", "Archivo", "Siguiente"
+            }
+        ));
+        jScrollPane4.setViewportView(jTableBloques);
+
+        jLabel7.setText("Simulación del Disco");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 289, Short.MAX_VALUE)
+                .addGap(83, 83, 83)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 170, Short.MAX_VALUE)
                 .addComponent(jLabel2)
-                .addGap(213, 213, 213)
+                .addGap(205, 205, 205)
                 .addComponent(jLabel3)
                 .addGap(96, 96, 96))
             .addGroup(layout.createSequentialGroup()
@@ -180,10 +213,15 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
                     .addComponent(ArchivoButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(RenombrarButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(EliminarButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
+                    .addComponent(GuardarConfigButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(CargarConfigButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(16, 16, 16))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -194,8 +232,6 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
                         .addComponent(ModoUsuarioButton)
                         .addGap(99, 99, 99)
                         .addComponent(jLabel6)))
-                .addGap(160, 160, 160)
-                .addComponent(jLabel7)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGap(40, 40, 40)
@@ -207,44 +243,61 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(DirectorioButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ArchivoButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(RenombrarButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(EliminarButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(DirectorioButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ArchivoButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(GuardarConfigButton)
+                        .addGap(20, 20, 20)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(RenombrarButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(EliminarButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(CargarConfigButton)
+                        .addGap(26, 26, 26)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(133, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel2)
+                        .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                            .addComponent(jScrollPane1))
+                            .addComponent(jScrollPane1)
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
-                            .addComponent(ModoUsuarioButton)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel7))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel1)
+                                    .addComponent(jLabel3))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(ModoAdministradorButton))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(EmpezarSimulacionButton)
-                                .addGap(17, 17, 17))))))
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel5)
+                                    .addComponent(ModoUsuarioButton)
+                                    .addComponent(jLabel6))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(ModoAdministradorButton))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
+                                        .addComponent(EmpezarSimulacionButton)
+                                        .addGap(17, 17, 17))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addGap(0, 0, Short.MAX_VALUE))))))
         );
 
         pack();
@@ -357,8 +410,40 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
         tableModelo.setRowCount(0);
         
         archivosMap.clear();
+        inicializarTablaBloques();
         javax.swing.JOptionPane.showMessageDialog(null, "Simulación iniciada. Sistema reiniciado.");
     }//GEN-LAST:event_EmpezarSimulacionButtonActionPerformed
+
+    private void GuardarConfigButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GuardarConfigButtonActionPerformed
+        javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
+        fileChooser.setDialogTitle("Guardar Configuración");
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Archivos CSV", "csv"));
+        
+        int resultado = fileChooser.showSaveDialog(this);
+        if (resultado == javax.swing.JFileChooser.APPROVE_OPTION) {
+            java.io.File archivo = fileChooser.getSelectedFile();
+            String rutaArchivo = archivo.getAbsolutePath();
+            if (!rutaArchivo.endsWith(".csv")) {
+                rutaArchivo += ".csv";
+            }
+            Sistema.JTree.guardarArbolEnCSV(jTree1, rutaArchivo);
+        }
+    }//GEN-LAST:event_GuardarConfigButtonActionPerformed
+
+    private void CargarConfigButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CargarConfigButtonActionPerformed
+        javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
+        fileChooser.setDialogTitle("Cargar Configuración");
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Archivos CSV", "csv"));
+        
+        int resultado = fileChooser.showOpenDialog(this);
+        if (resultado == javax.swing.JFileChooser.APPROVE_OPTION) {
+            java.io.File archivo = fileChooser.getSelectedFile();
+            String rutaArchivo = archivo.getAbsolutePath();
+            Sistema.JTree.cargarArbolDesdeCSV(jTree1, rutaArchivo);
+            archivosMap.clear();
+            actualizarTablaArchivos();
+        }
+    }//GEN-LAST:event_CargarConfigButtonActionPerformed
 
     private void actualizarTablaArchivos() {
         javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) jTableArchivos.getModel();
@@ -390,6 +475,67 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
         }
     }
     
+    private void inicializarTablaBloques() {
+        javax.swing.table.DefaultTableModel tableModel = (javax.swing.table.DefaultTableModel) jTableBloques.getModel();
+        tableModel.setRowCount(0);
+        tableModel.setColumnIdentifiers(new String[]{"Bloque", "Estado", "Archivo", "Siguiente"});
+        
+        // Configurar número total de bloques (ej: 1024 bloques de disco)
+        int totalBloques = 100;
+        for (int i = 0; i < totalBloques; i++) {
+            tableModel.addRow(new Object[]{i, "Libre", "", -1});
+        }
+        
+        // Personalizar la tabla
+        jTableBloques.setRowHeight(25);
+        jTableBloques.setDefaultRenderer(Object.class, new BloqueTableCellRenderer());
+    }
+    
+    public void actualizarEstadoBloque(int numeroBloque, String estado, String nombreArchivo, int siguienteBloque) {
+        javax.swing.table.DefaultTableModel tableModel = (javax.swing.table.DefaultTableModel) jTableBloques.getModel();
+        if (numeroBloque >= 0 && numeroBloque < tableModel.getRowCount()) {
+            tableModel.setValueAt(estado, numeroBloque, 1);
+            tableModel.setValueAt(nombreArchivo, numeroBloque, 2);
+            tableModel.setValueAt(siguienteBloque, numeroBloque, 3);
+        }
+    }
+    
+    class BloqueTableCellRenderer extends javax.swing.table.DefaultTableCellRenderer {
+        @Override
+        public java.awt.Component getTableCellRendererComponent(javax.swing.JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+            
+            java.awt.Component c = super.getTableCellRendererComponent(table, value, 
+                    isSelected, hasFocus, row, column);
+            
+            String estado = (String) table.getValueAt(row, 1);
+            
+            switch (estado) {
+                case "Libre":
+                    c.setBackground(java.awt.Color.WHITE);
+                    c.setForeground(java.awt.Color.BLACK);
+                    break;
+                case "Ocupado":
+                    c.setBackground(java.awt.Color.BLUE);
+                    c.setForeground(java.awt.Color.WHITE);
+                    break;
+                case "Reservado":
+                    c.setBackground(java.awt.Color.YELLOW);
+                    c.setForeground(java.awt.Color.BLACK);
+                    break;
+                case "Puntero":
+                    c.setBackground(java.awt.Color.GREEN);
+                    c.setForeground(java.awt.Color.BLACK);
+                    break;
+                default:
+                    c.setBackground(java.awt.Color.WHITE);
+                    c.setForeground(java.awt.Color.BLACK);
+            }
+            
+            return c;
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -417,9 +563,11 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton ArchivoButton;
+    private javax.swing.JButton CargarConfigButton;
     private javax.swing.JButton DirectorioButton;
     private javax.swing.JButton EliminarButton;
     private javax.swing.JButton EmpezarSimulacionButton;
+    private javax.swing.JButton GuardarConfigButton;
     private javax.swing.JRadioButton ModoAdministradorButton;
     private javax.swing.JRadioButton ModoUsuarioButton;
     private javax.swing.JButton RenombrarButton;
@@ -434,8 +582,10 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTableArchivos;
+    private javax.swing.JTable jTableBloques;
     private javax.swing.JTree jTree1;
     // End of variables declaration//GEN-END:variables
 }
