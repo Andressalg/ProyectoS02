@@ -14,14 +14,14 @@ import javax.swing.SwingUtilities;
  */
 public class Sistema {
 
-public static void main(String[] args) {
-
-    SwingUtilities.invokeLater(() -> {
-        ControlDeOperaciones frame = new ControlDeOperaciones();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-    });
-}
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            ControlDeOperaciones frame = new ControlDeOperaciones();
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setSize(900, 700);
+            frame.setLocationRelativeTo(null);
+            frame.setResizable(true);
+            frame.setVisible(true);
+        });
+    }
 }
