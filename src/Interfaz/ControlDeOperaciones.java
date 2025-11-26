@@ -17,6 +17,10 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
      */
     public ControlDeOperaciones() {
         initComponents();
+        DirectorioButton.setVisible(false);
+        ArchivoButton.setVisible(false);
+        RenombrarButton.setVisible(false);
+        EliminarButton.setVisible(false);
     }
 
     /**
@@ -28,21 +32,224 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
+        DirectorioButton = new javax.swing.JButton();
+        ArchivoButton = new javax.swing.JButton();
+        RenombrarButton = new javax.swing.JButton();
+        EliminarButton = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTree1 = new javax.swing.JTree();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        ModoUsuarioButton = new javax.swing.JRadioButton();
+        ModoAdministradorButton = new javax.swing.JRadioButton();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        DirectorioButton.setText("Crear Directorio");
+        DirectorioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DirectorioButtonActionPerformed(evt);
+            }
+        });
+
+        ArchivoButton.setText("Crear Archivo");
+        ArchivoButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ArchivoButtonActionPerformed(evt);
+            }
+        });
+
+        RenombrarButton.setText("Renombrar");
+        RenombrarButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RenombrarButtonActionPerformed(evt);
+            }
+        });
+
+        EliminarButton.setText("Eliminar");
+        EliminarButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EliminarButtonActionPerformed(evt);
+            }
+        });
+
+        jScrollPane1.setViewportView(jTree1);
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(jTable1);
+
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane3.setViewportView(jTable2);
+
+        jLabel1.setText("Estructura de Directorios");
+
+        jLabel2.setText("Tabla de Archivos");
+
+        jLabel3.setText("Cola de Procesos");
+
+        jLabel4.setText("Barra de Estado");
+
+        jLabel5.setText("Modo:");
+
+        buttonGroup1.add(ModoUsuarioButton);
+        ModoUsuarioButton.setSelected(true);
+        ModoUsuarioButton.setText("Usuario");
+        ModoUsuarioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ModoUsuarioButtonActionPerformed(evt);
+            }
+        });
+
+        buttonGroup1.add(ModoAdministradorButton);
+        ModoAdministradorButton.setText("Administrador");
+        ModoAdministradorButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ModoAdministradorButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setText("Política:");
+
+        jLabel7.setText("Bloques Libres:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1)
+                    .addComponent(DirectorioButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(ArchivoButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(RenombrarButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(EliminarButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 207, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(16, 16, 16))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addGap(213, 213, 213)
+                .addComponent(jLabel3)
+                .addGap(96, 96, 96))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(ModoUsuarioButton)
+                                .addGap(99, 99, 99)
+                                .addComponent(jLabel6)))
+                        .addGap(160, 160, 160)
+                        .addComponent(jLabel7))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(40, 40, 40)
+                        .addComponent(ModoAdministradorButton)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addComponent(DirectorioButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(ArchivoButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(RenombrarButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(EliminarButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(ModoUsuarioButton)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel7))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(ModoAdministradorButton)
+                .addContainerGap(26, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void DirectorioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DirectorioButtonActionPerformed
+        Sistema.JTree.anadirDirectorio(jTree1, (javax.swing.tree.DefaultTreeModel) jTree1.getModel());
+    }//GEN-LAST:event_DirectorioButtonActionPerformed
+
+    private void ModoUsuarioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ModoUsuarioButtonActionPerformed
+        DirectorioButton.setVisible(false);
+        ArchivoButton.setVisible(false);
+        RenombrarButton.setVisible(false);
+        EliminarButton.setVisible(false);
+    }//GEN-LAST:event_ModoUsuarioButtonActionPerformed
+
+    private void ArchivoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ArchivoButtonActionPerformed
+        Sistema.JTree.anadirArchivo(jTree1, (javax.swing.tree.DefaultTreeModel) jTree1.getModel());
+    }//GEN-LAST:event_ArchivoButtonActionPerformed
+
+    private void RenombrarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RenombrarButtonActionPerformed
+        Sistema.JTree.renombrarNodo(jTree1, (javax.swing.tree.DefaultTreeModel) jTree1.getModel());
+    }//GEN-LAST:event_RenombrarButtonActionPerformed
+
+    private void EliminarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarButtonActionPerformed
+        Sistema.JTree.removerNodo(jTree1, (javax.swing.tree.DefaultTreeModel) jTree1.getModel());
+    }//GEN-LAST:event_EliminarButtonActionPerformed
+
+    private void ModoAdministradorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ModoAdministradorButtonActionPerformed
+        DirectorioButton.setVisible(true);
+        ArchivoButton.setVisible(true);
+        RenombrarButton.setVisible(true);
+        EliminarButton.setVisible(true);
+    }//GEN-LAST:event_ModoAdministradorButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -70,5 +277,25 @@ public class ControlDeOperaciones extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton ArchivoButton;
+    private javax.swing.JButton DirectorioButton;
+    private javax.swing.JButton EliminarButton;
+    private javax.swing.JRadioButton ModoAdministradorButton;
+    private javax.swing.JRadioButton ModoUsuarioButton;
+    private javax.swing.JButton RenombrarButton;
+    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable2;
+    private javax.swing.JTree jTree1;
     // End of variables declaration//GEN-END:variables
 }

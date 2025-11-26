@@ -18,7 +18,7 @@ import java.io.IOException;
  */
 public class JTree {
 
-    private static void anadirDirectorio(javax.swing.JTree arbol, DefaultTreeModel modelo) {
+    public static void anadirDirectorio(javax.swing.JTree arbol, DefaultTreeModel modelo) {
         String nombre = preguntarpornombre("Nombre del directorio:");
         if (nombre == null) return;
         DefaultMutableTreeNode raiz = (DefaultMutableTreeNode) modelo.getRoot();
@@ -29,7 +29,7 @@ public class JTree {
         arbol.setSelectionPath(camino);
     }
 
-    private static void anadirArchivo(javax.swing.JTree arbol, DefaultTreeModel modelo) {
+    public static void anadirArchivo(javax.swing.JTree arbol, DefaultTreeModel modelo) {
         TreePath seleccion = arbol.getSelectionPath();
         DefaultMutableTreeNode directorio;
         if (seleccion == null) {
@@ -47,7 +47,7 @@ public class JTree {
         arbol.setSelectionPath(camino);
     }
 
-    private static void renombrarNodo(javax.swing.JTree arbol, DefaultTreeModel modelo) {
+    public static void renombrarNodo(javax.swing.JTree arbol, DefaultTreeModel modelo) {
         TreePath seleccion = arbol.getSelectionPath();
         if (seleccion == null) {
             JOptionPane.showMessageDialog(null, "Seleccione un archivo/directorio para renombrar.");
@@ -66,7 +66,7 @@ public class JTree {
         modelo.nodeChanged(nodo);
     }
 
-    private static void removerNodo(javax.swing.JTree arbol, DefaultTreeModel modelo) {
+    public static void removerNodo(javax.swing.JTree arbol, DefaultTreeModel modelo) {
         TreePath seleccion = arbol.getSelectionPath();
         if (seleccion == null) {
             JOptionPane.showMessageDialog(null, "Seleccione un archivo/directorio para eliminar.");
